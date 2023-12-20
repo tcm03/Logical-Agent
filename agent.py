@@ -49,9 +49,6 @@ class Agent:
             
     
     def find_path_to_exit(self, start, end):
-        print("start exit")
-        print(self.currentCave)
-        print(self.G)
         trace = []
         visited = []
 
@@ -139,7 +136,7 @@ class Agent:
                 self.G=old_g
                 self.direction= old_direction
                 
-                return path,shoot_list,direction, False
+                return path,shoot_list,direction_list, False
 
             if position == end:
                 path = []
@@ -387,7 +384,8 @@ class Agent:
         if self.direction == "left":
             for i in range(self.currentCave[1],-1,-1):
                 if "W" in self.map_game[self.currentCave[0]][i]:
-                    self.updateWumPus(self.currentCave[0],i,"0")
+                    # self.updateWumPus(self.currentCave[0],i,"0")
+                    self.updateWumPus(self.currentCave[0],self.currentCave[1]-1,"0")
                     txt = self.map_game[self.currentCave[0]][i]
                     temp = txt[0:txt.index("W")]+txt[txt.index("W")+1:]
                     self.map_game[self.currentCave[0]][i]=temp
@@ -398,7 +396,8 @@ class Agent:
         if self.direction == "right":
             for i in range(self.currentCave[1],self.size):
                 if "W" in self.map_game[self.currentCave[0]][i]:
-                    self.updateWumPus(self.currentCave[0],i,"0")
+                    # self.updateWumPus(self.currentCave[0],i,"0")
+                    self.updateWumPus(self.currentCave[0],self.currentCave[1]+1,"0")
                     txt = self.map_game[self.currentCave[0]][i]
                     temp = txt[0:txt.index("W")]+txt[txt.index("W")+1:]
                     self.map_game[self.currentCave[0]][i]=temp
@@ -408,7 +407,8 @@ class Agent:
         if self.direction == "up":
             for i in range(self.currentCave[0],-1,-1):
                 if "W" in self.map_game[i][self.currentCave[1]]:
-                    self.updateWumPus(i,self.currentCave[1],"0")
+                    # self.updateWumPus(i,self.currentCave[1],"0")
+                    self.updateWumPus(self.currentCave[0]-1,self.currentCave[1],"0")
                     txt = self.map_game[i][self.currentCave[1]]
                     temp = txt[0:txt.index("W")]+txt[txt.index("W")+1:]
                     self.map_game[i][self.currentCave[1]]=temp
@@ -418,7 +418,8 @@ class Agent:
         if self.direction == "down":
             for i in range(self.currentCave[0],self.size):
                 if "W" in self.map_game[i][self.currentCave[1]]:
-                    self.updateWumPus(i,self.currentCave[1],"0")
+                    # self.updateWumPus(i,self.currentCave[1],"0")
+                    self.updateWumPus(self.currentCave[0]+1,self.currentCave[1],"0")
                     txt = self.map_game[i][self.currentCave[1]]
                     temp = txt[0:txt.index("W")]+txt[txt.index("W")+1:]
                     self.map_game[i][self.currentCave[1]]=temp
