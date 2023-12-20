@@ -109,20 +109,24 @@ class Agent:
                 path = []
                 shoot_list = [is_shoot]
                 direction_list = [direction]
+                check_sort = is_shoot
                 while position != start:  # change here
-                    if trace[position[0]][position[1]][1] == 1:
+                    if check_sort == 1:
                         path.append(position)
                         path.append(position)
-                        shoot_list.append(0)
+                        print(position)
                         shoot_list.append(1)
+                        shoot_list.append(0)
                         direction_list.append(trace[position[0]][position[1]][2])
                         direction_list.append(trace[position[0]][position[1]][2])
                         position = trace[position[0]][position[1]][0]
+                        check_sort = trace[position[0]][position[1]][1]
                     else:
                         path.append(position)
                         position = trace[position[0]][position[1]][0]
-                        shoot_list.append(trace[position[0]][position[1]][1])
+                        shoot_list.append(0)
                         direction_list.append(trace[position[0]][position[1]][2])
+                        check_sort = trace[position[0]][position[1]][1]
                 path.append(start)  # add start to the path
                 path.reverse()  # reverse the path to get from start to end
                 shoot_list.reverse()
@@ -142,21 +146,24 @@ class Agent:
                 path = []
                 shoot_list = [is_shoot]
                 direction_list = [direction]
+                check_sort = is_shoot
                 while position != start:  # change here
                     
-                    if trace[position[0]][position[1]][0] == 1:
+                    if check_sort == 1:
                         path.append(position)
                         path.append(position)
-                        shoot_list.append(0)
                         shoot_list.append(1)
+                        shoot_list.append(0)
                         direction_list.append(trace[position[0]][position[1]][2])
                         direction_list.append(trace[position[0]][position[1]][2])
                         position = trace[position[0]][position[1]][0]
+                        check_sort = trace[position[0]][position[1]][1]
                     else:
                         path.append(position)
                         position = trace[position[0]][position[1]][0]
-                        shoot_list.append(trace[position[0]][position[1]][1])
+                        shoot_list.append(0)
                         direction_list.append(trace[position[0]][position[1]][2])
+                        check_sort = trace[position[0]][position[1]][1]
                 path.append(start)  # add start to the path
                 path.reverse()  # reverse the path to get from start to end
                 shoot_list.reverse()
@@ -386,6 +393,7 @@ class Agent:
                 if "W" in self.map_game[self.currentCave[0]][i]:
                     # self.updateWumPus(self.currentCave[0],i,"0")
                     self.updateWumPus(self.currentCave[0],self.currentCave[1]-1,"0")
+                    self.updateWumPus(self.currentCave[0],self.currentCave[1],"0")
                     txt = self.map_game[self.currentCave[0]][i]
                     temp = txt[0:txt.index("W")]+txt[txt.index("W")+1:]
                     self.map_game[self.currentCave[0]][i]=temp
@@ -398,6 +406,7 @@ class Agent:
                 if "W" in self.map_game[self.currentCave[0]][i]:
                     # self.updateWumPus(self.currentCave[0],i,"0")
                     self.updateWumPus(self.currentCave[0],self.currentCave[1]+1,"0")
+                    self.updateWumPus(self.currentCave[0],self.currentCave[1],"0")
                     txt = self.map_game[self.currentCave[0]][i]
                     temp = txt[0:txt.index("W")]+txt[txt.index("W")+1:]
                     self.map_game[self.currentCave[0]][i]=temp
@@ -409,6 +418,7 @@ class Agent:
                 if "W" in self.map_game[i][self.currentCave[1]]:
                     # self.updateWumPus(i,self.currentCave[1],"0")
                     self.updateWumPus(self.currentCave[0]-1,self.currentCave[1],"0")
+                    self.updateWumPus(self.currentCave[0],self.currentCave[1],"0")
                     txt = self.map_game[i][self.currentCave[1]]
                     temp = txt[0:txt.index("W")]+txt[txt.index("W")+1:]
                     self.map_game[i][self.currentCave[1]]=temp
@@ -420,6 +430,7 @@ class Agent:
                 if "W" in self.map_game[i][self.currentCave[1]]:
                     # self.updateWumPus(i,self.currentCave[1],"0")
                     self.updateWumPus(self.currentCave[0]+1,self.currentCave[1],"0")
+                    self.updateWumPus(self.currentCave[0],self.currentCave[1],"0")
                     txt = self.map_game[i][self.currentCave[1]]
                     temp = txt[0:txt.index("W")]+txt[txt.index("W")+1:]
                     self.map_game[i][self.currentCave[1]]=temp
@@ -527,7 +538,6 @@ class Agent:
         self.path.append(start)
         self.direction_list.append(direction)
         
-        print(self.P)
         
         if check_style == 1:
             self.shoot.append(1)
@@ -590,7 +600,6 @@ class Agent:
                 #     self.shoot.append(0)
             if exit_live:
                 self.point[-1] += 10
-                print(self.G)
             shoot_list = shoot_list[1:]
             direction_list = direction_list[1:]
             self.shoot.extend(shoot_list)
@@ -629,7 +638,6 @@ class Agent:
                             xynew = (-1,0)
                         if start[0]+xynew[0] < 0 or start[0]+xynew[0] >= self.size or start[1]+xynew[1] < 0 or start[1]+xynew[1] >= self.size:
                             if self.try_stop == 0:
-                                print(self.P)
                                 temp_path,shoot_list,direction_list, exit_live = self.find_path_to_exit(start,(self.size-1,0))
                                 self.path.pop()
                                 self.path.extend(temp_path)
