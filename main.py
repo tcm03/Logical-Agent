@@ -16,23 +16,23 @@ from agent import Agent
 #                  ['-','-','-','-'], # Rooms [1,4] to [4,4]
 # ]
 
-map_game = [
-                 ['-','B','P','B'], # Rooms [1,1] to [4,1]
-                 ['S','-','B','-'], # Rooms [1,2] to [4,2] 
-                 ['W','S','-','G'], # Rooms [1,3] to [4,3]
-                 ['S','-','G','G'], # Rooms [1,4] to [4,4]
-                ]
-
-
 # map_game = [
 #                  ['-','B','P','B'], # Rooms [1,1] to [4,1]
 #                  ['S','-','B','-'], # Rooms [1,2] to [4,2] 
-#                  ['W','S','B','-'], # Rooms [1,3] to [4,3]
-#                  ['S','B','P','BG'], # Rooms [1,4] to [4,4]
+#                  ['W','S','-','G'], # Rooms [1,3] to [4,3]
+#                  ['S','-','G','G'], # Rooms [1,4] to [4,4]
 #                 ]
 
+
+map_game = [
+                 ['-','B','P','B'], # Rooms [1,1] to [4,1]
+                 ['S','-','B','-'], # Rooms [1,2] to [4,2] 
+                 ['W','S','B','-'], # Rooms [1,3] to [4,3]
+                 ['S','B','P','BG'], # Rooms [1,4] to [4,4]
+                ]
+
 agent = Agent(0,0,4,map_game)
-path, point,shoot,direction,grab,map_list, check = agent.find_path((0,0),(-1,-1),0, None,"right")
+path, point,shoot,direction,grab,map_list, check = agent.find_path((0,0),(-1,-1),0, None,"right",copy.deepcopy(map_game))
 # path = agent.find_path_to_exit((0,0),(3,3))
 
 print(path)  #danh sách các bước đi của agent
@@ -53,5 +53,9 @@ print(len(map_list))
 # print(agent.W)
 # print(agent.knowledgePit)
 # print(agent.knowledgeWum)
+
+
+for i in map_list:
+    print(i)
 
 
