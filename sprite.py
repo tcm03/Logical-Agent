@@ -14,7 +14,7 @@ GREY = (169,169,169)
 # Pygame define
 WINDOW_SIZE = (1280, 720)
 ROOM_SIZE = 48
-FPS = 5
+FPS = 1
 TITLE = "WUMPUS WORLD"
 BGCOLOR = BLACK
 BG = pygame.image.load("assets/background.png")
@@ -85,9 +85,6 @@ class Player(pygame.sprite.Sprite):
         else:
             self.image = self.player_move[0]
 
-    def get_direction(self):
-        return self.direction
-
 
 class Wumpus(pygame.sprite.Sprite):
     def __init__(self, x, y, offset_x, offset_y):
@@ -110,28 +107,28 @@ class Pit(pygame.sprite.Sprite):
 
 
 class Stench(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, offset_x, offset_y):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load('assets/stench.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (ROOM_SIZE, ROOM_SIZE))
         self.rect = self.image.get_rect()
-        self.rect.x = x * ROOM_SIZE
-        self.rect.y = y * ROOM_SIZE
+        self.rect.x = x * ROOM_SIZE + offset_x
+        self.rect.y = y * ROOM_SIZE + offset_y
 
 class Breeze(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, offset_x, offset_y):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load('assets/breeze.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (ROOM_SIZE, ROOM_SIZE))
         self.rect = self.image.get_rect()
-        self.rect.x = x * ROOM_SIZE
-        self.rect.y = y * ROOM_SIZE
+        self.rect.x = x * ROOM_SIZE + offset_x
+        self.rect.y = y * ROOM_SIZE + offset_y
 
 class Treasure(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, offset_x, offset_y):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load('assets/treasure-chest.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (ROOM_SIZE, ROOM_SIZE))
         self.rect = self.image.get_rect()
-        self.rect.x = x * ROOM_SIZE
-        self.rect.y = y * ROOM_SIZE
+        self.rect.x = x * ROOM_SIZE + offset_x
+        self.rect.y = y * ROOM_SIZE + offset_y

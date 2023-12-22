@@ -1,3 +1,5 @@
+import random
+
 def read_map(file_path):
     try:
         with open(file_path, 'r') as file:
@@ -33,7 +35,20 @@ def update_adjacent(world_map, row, col, perception):
             else:
                 world_map[new_row][new_col] = ",".join([world_map[new_row][new_col], perception])
 
-# Example:
-# file_path = "test_input.txt" # Replace with the actual file path
-# input_map = read_map(file_path)
-# infer_information(input_map)
+
+
+def generate_map(width, height):
+    map = [["-" for i in range(width)] for i in range(height)]
+    for i in range(height):
+        for j in range(width):
+            rand_num = random.random()  # Generate a random number between 0 and 1
+            if rand_num < 0.6:  # 60% chance
+                continue
+            elif rand_num < 0.8:  # 20% chance
+                room = "P"
+            elif rand_num < 0.9:  # 10% chance
+                room = "W"
+            else:  # 10% chance
+                room = "G"
+            map[i][j] = room
+    return map
