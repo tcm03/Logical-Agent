@@ -1,8 +1,8 @@
 
 # Following arrays are not consist with the map (just use for test)
+from sprite import DIRECTION
 
-MOVEMENT_DEMO = [(0, 0), (0, 1), (0, 0), (1, 0), (1, 1), (1, 2), (1, 1), (2, 1), (2, 2), (2, 3), (2, 2), (3, 2), (3, 1),
-                 (3, 0)]
+MOVEMENT_DEMO = [(0, 0), (0, 1), (0, 0), (1, 0), (1, 1), (1, 2), (1, 1), (2, 1), (2, 2), (2, 3), (2, 2), (3, 2), (3, 1), (3, 0)]
 
 SCORE_DEMO = [0, -10, -20, -30, -40, -50, -60, -70, -80, 910, 900, 1890, 1880, 1880]
 
@@ -15,6 +15,11 @@ PERCEPT_DEMO = [["Stench", "Breeze"], [], ["Breeze"], ["Glitter"], ["Breeze"], [
 SHOOT_DEMO = [1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0]
 
 GRAB_DEMO = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0]
+
+MAP_DEMO = [[['-', 'B', 'P', 'B'], ['S', '-', 'B', '-'], ['W', 'S', '-', 'G'], ['S', '-', 'G', 'G']], [['-', 'B', 'P', 'B'], ['S', '-', 'B', '-'], ['W', 'S', '-', 'G'], ['S', '-', 'G', 'G']], [['-', 'B', 'P', 'B'], ['S', '-', 'B', '-'], ['W', 'S', '-', 'G'], ['S', '-', 'G', 'G']], [['-', 'B', 'P', 'B'], ['S', '-', 'B', '-'], ['W', 'S', '-', 'G'], ['S', '-', 'G', 'G']], [['-', 'B', ' P', 'B'], ['S', '-', 'B', '-'], ['W', 'S', '-', 'G'], ['S', '-', 'G', 'G']], [['-', 'B', 'P', 'B'], ['S', '-', 'B', '-'], ['W', 'S', '-', 'G'], ['S', '-', 'G', 'G']], [['-', 'B', 'P', 'B' ], ['S', '-', 'B', '-'], ['W', 'S', '-', 'G'], ['S', '-', 'G', 'G']], [['-', 'B', 'P', 'B'], ['S', '-', 'B', '-'], ['W', 'S', '-', 'G'], ['S', '-', 'G', 'G']], [['-', 'B', 'P', 'B'], ['S' , '-', 'B', '-'], ['W', 'S', '-', 'G'], ['S', '-', 'G', 'G']], [['-', 'B', 'P', 'B'], ['S', '-', 'B', '-'], ['W', 'S', '-', 'G'], ['S', '-', 'G', 'G']], [['-', 'B', 'P', 'B'], ['S', '-', 'B', '-'], ['W', 'S', '-', 'G'], ['S', '-', 'G', 'G']], [['-', 'B', 'P', 'B'], ['S', '-', 'B', '-'], ['W', 'S', '-', 'G'], ['S', '-', 'G', 'G']], [['-', 'B', 'P', 'B'], ['S', '-', 'B', '- '], ['W', 'S', '-', 'G'], ['S', '-', 'G', 'G']], [['-', 'B', 'P', 'B'], ['S', '-', 'B', '-'], ['W', 'S', '-', 'G'], ['S', '-', 'G', 'G']]]
+
+DIRECTION_DEMO = ['right', 'right', 'left', 'down', 'right', 'right', 'left', 'down', 'right', 'right', 'left', 'down', 'left', 'left']
+
 
 class SimpleController:
     def __init__(self):
@@ -29,6 +34,8 @@ class SimpleController:
             information["percept"] = self.get_percept()
             information["shoot"] = self.get_shoot()
             information["grab"] = self.get_grab()
+            information["map"] = self.get_map()
+            information["direction"] = self.get_direction()
             self.step += 1
         return information
 
@@ -60,4 +67,23 @@ class SimpleController:
     def get_grab(self):
         if self.step < len(GRAB_DEMO):
             return GRAB_DEMO[self.step]
+        return None
+
+    def get_map(self):
+        if self.step < len(MAP_DEMO):
+            return MAP_DEMO[self.step]
+        return None
+
+    def get_direction(self):
+        if self.step < len(DIRECTION_DEMO):
+            elem = DIRECTION_DEMO[self.step]
+            if elem == "right":
+                return DIRECTION.RIGHT
+            elif elem == "left":
+                return DIRECTION.LEFT
+            elif elem == "up":
+                return DIRECTION.UP
+            else:
+                return DIRECTION.DOWN
+
         return None

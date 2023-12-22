@@ -14,37 +14,37 @@ class Game:
         pygame.init()
         self.screen = pygame.display.set_mode(WINDOW_SIZE)
         pygame.display.set_caption(TITLE)
-
         self.clock = pygame.time.Clock()
         pygame.key.set_repeat(500, 100)
-        self.load_data()
+
+        self.controller = SimpleController()
 
         self.score = 0
         self.current_percept = None
         self.log = []
-        self.controller = SimpleController()
-        self.offset_x = (960 - self.num_width * ROOM_SIZE) // 2
-        self.offset_y = (WINDOW_SIZE[1] - self.num_height * ROOM_SIZE) // 2
+        self.map = []
+
+        self.load_data()
 
     def load_data(self):
         self.map = parser.read_map("test_input.txt")
         parser.infer_information(self.map)
         self.num_height = len(self.map)
         self.num_width = len(self.map[0])
+        self.offset_x = (960 - self.num_width * ROOM_SIZE) // 2
+        self.offset_y = (WINDOW_SIZE[1] - self.num_height * ROOM_SIZE) // 2
 
     def new(self):
         self.player = pygame.sprite.GroupSingle()
         self.player.add(Player(offset_x=self.offset_x, offset_y=self.offset_y))
-
         self.wumpus_group = pygame.sprite.Group()
         self.pit_group = pygame.sprite.Group()
+        self.stench_group = pygame.sprite.Group()
+        self.breeze_group = pygame.sprite.Group()
+        self.treasure_group = pygame.sprite.Group()
 
-        for row, tiles in enumerate(self.map):
-            for col, tile in enumerate(tiles):
-                if "W" in tile:
-                    self.wumpus_group.add(Wumpus(col, row, offset_x=self.offset_x, offset_y=self.offset_y))
-                if "P" in tile:
-                    self.pit_group.add(Pit(col, row, offset_x=self.offset_x, offset_y=self.offset_y))
+
+        self.draw_object()
 
     def run(self):
         # game loop - set self.playing = False to end the game
@@ -63,8 +63,23 @@ class Game:
     def update(self):
         # update portion of the game
         self.player.update()
-        self.wumpus_group.update()
-        self.pit_group.update()
+
+        for ele in self.wumpus_group:
+            ele.kill()
+
+        for ele in self.pit_group:
+            ele.kill()
+
+        for ele in self.stench_group:
+            ele.kill()
+
+        for ele in self.breeze_group:
+            ele.kill()
+
+        for ele in self.treasure_group:
+            ele.kill()
+
+        self.draw_object()
 
     def draw_grid(self, offset_x, offset_y):
         width = self.num_width * ROOM_SIZE
@@ -81,9 +96,15 @@ class Game:
     def draw(self):
         self.screen.fill(BGCOLOR)
         self.draw_grid(offset_x=self.offset_x, offset_y=self.offset_y)
-        self.player.draw(self.screen)
+
         self.wumpus_group.draw(self.screen)
         self.pit_group.draw(self.screen)
+        self.stench_group.draw(self.screen)
+        self.breeze_group.draw(self.screen)
+        self.treasure_group.draw(self.screen)
+
+
+        self.player.draw(self.screen)
 
         self.draw_notification_rect()
 
@@ -122,6 +143,20 @@ class Game:
             self.draw_text(l, get_font(20), BLACK, WINDOW_SIZE[0] - 150, y_position)
             y_position += 20
 
+    def draw_object(self):
+        for row, tiles in enumerate(self.map):
+            for col, tile in enumerate(tiles):
+                if "W" in tile:
+                    self.wumpus_group.add(Wumpus(col, row, offset_x=self.offset_x, offset_y=self.offset_y))
+                if "P" in tile:
+                    self.pit_group.add(Pit(col, row, offset_x=self.offset_x, offset_y=self.offset_y))
+                if "S" in tile:
+                    self.pit_group.add(Stench(col, row, offset_x=self.offset_x, offset_y=self.offset_y))
+                if "B" in tile:
+                    self.pit_group.add(Breeze(col, row, offset_x=self.offset_x, offset_y=self.offset_y))
+                if "G" in tile:
+                    self.pit_group.add(Treasure(col, row, offset_x=self.offset_x, offset_y=self.offset_y))
+
     def draw_text(self, text, font, text_color, x, y):
         text_surf = font.render(text, True, text_color)
         text_rect = text_surf.get_rect(center=(x, y))
@@ -132,35 +167,11 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.quit()
-            # if event.type == pygame.KEYDOWN:
-            #     self.score += 1
-            #     if event.key == pygame.K_ESCAPE:
-            #         self.quit()
-            #     if event.key == pygame.K_LEFT:
-            #         if self.player.sprite.get_direction() == DIRECTION.LEFT:
-            #             self.player.sprite.move(dx=-1)
-            #         else:
-            #             self.player.sprite.rotate(DIRECTION.LEFT)
-            #     if event.key == pygame.K_RIGHT:
-            #         if self.player.sprite.get_direction() == DIRECTION.RIGHT:
-            #             self.player.sprite.move(dx=1)
-            #         else:
-            #             self.player.sprite.rotate(DIRECTION.RIGHT)
-            #     if event.key == pygame.K_UP:
-            #         if self.player.sprite.get_direction() == DIRECTION.UP:
-            #             self.player.sprite.move(dy=-1)
-            #         else:
-            #             self.player.sprite.rotate(DIRECTION.UP)
-            #     if event.key == pygame.K_DOWN:
-            #         if self.player.sprite.get_direction() == DIRECTION.DOWN:
-            #             self.player.sprite.move(dy=1)
-            #         else:
-            #             self.player.sprite.rotate(DIRECTION.DOWN)
 
     def consume(self):
         info = self.controller.get_action()
         if len(info) > 0:
-            self.player.sprite.move_to(info["position"])
+            self.player.sprite.move_to(info["position"][::-1])
             self.score = info["score"]
             self.log.append(info["log"])
             self.current_percept = info["percept"]
@@ -168,6 +179,8 @@ class Game:
                 self.player.sprite.shoot(False)
             if info["grab"] == 1:
                 self.player.sprite.grab()
+            self.map = info["map"]
+            self.player.sprite.rotate(info["direction"])
 
     def main_menu(self):
         while True:
@@ -209,3 +222,4 @@ g = Game()
 while True:
     g.new()
     g.main_menu()
+
