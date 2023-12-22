@@ -32,7 +32,7 @@ map_game = [
 #                 ]
 
 agent = Agent(0,0,4,map_game)
-path, point,shoot,direction,grab, check = agent.find_path((0,0),(-1,-1),0, None,"right")
+path, point,shoot,direction,grab,map_list, check = agent.find_path((0,0),(-1,-1),0, None,"right")
 # path = agent.find_path_to_exit((0,0),(3,3))
 
 print(path)  #danh sách các bước đi của agent
@@ -40,11 +40,13 @@ print(point) #điểm hiện tại của agent tương ứng với tường bư�
 print(shoot) #agent có bắn mũi tên tại vị trí đó hay không(0: không bắn, 1: có bắn)
 print(direction) #hướng hiện tại của agent(right left top down)
 print(grab) #(agent có nhặt vàng tại vị trí đó hay không)
+print(map_list)
 print(len(path))
 print(len(point))
 print(len(shoot))
 print(len(direction))
 print(len(grab))
+print(len(map_list))
 
 # print("--------------")
 # print(agent.P)

@@ -21,6 +21,7 @@ class Agent:
         self.try_stop = 1
         self.direction_list=[]
         self.grab = []
+        self.map_list = []
         
         
         for _ in range(N):
@@ -106,7 +107,7 @@ class Agent:
             if visited[x][y]:
                 continue
             visited[x][y] = True
-            trace[x][y] = (old_position,is_shoot,direction)
+            trace[x][y] = (old_position,is_shoot,direction,old_map2)
             if self.map_game[x][y] == "P" or ("W" in self.map_game[x][y] and is_shoot == 0):
                 self.currentCave = start
                 self.map_game=old_map
@@ -120,15 +121,19 @@ class Agent:
                 shoot_list = [0]
                 direction_list = []
                 check_sort = is_shoot
-                
-                # print("----------------")
+                map_list = []
+                temp_check_map = None
+    
                 while position != start:  # change here
                     # print(position)
                     if check_sort == 1:
                         path.append(position)
                         path.append(position)
                         shoot_list.append(1)
+                        map_list.append(temp_check_map)
                         shoot_list.append(0)
+                        map_list.append(trace[position[0]][position[1]][3])
+                        temp_check_map = trace[position[0]][position[1]][3]
                         direction_list.append(trace[position[0]][position[1]][2])
                         direction_list.append(trace[position[0]][position[1]][2])
                         position = trace[position[0]][position[1]][0]
@@ -137,6 +142,8 @@ class Agent:
                         path.append(position)
                         shoot_list.append(0)
                         direction_list.append(trace[position[0]][position[1]][2])
+                        map_list.append(trace[position[0]][position[1]][3])
+                        temp_check_map = trace[position[0]][position[1]][3]
                         position = trace[position[0]][position[1]][0]
                         check_sort = trace[position[0]][position[1]][1]
                 print("----------------")
@@ -145,10 +152,11 @@ class Agent:
                 path.reverse()  # reverse the path to get from start to end
                 shoot_list.reverse()
                 direction_list.reverse()
+                map_list.reverse()
                 
                 # print(trace)
                 
-                return path,shoot_list,direction_list, False
+                return path,shoot_list,direction_list,map_list, False
 
             if position == end:
                 self.currentCave = start
@@ -163,6 +171,8 @@ class Agent:
                 shoot_list = [0]
                 direction_list = []
                 check_sort = is_shoot
+                map_list = []
+                temp_check_map = None
                 # print("shoot end: ",is_shoot)
                 while position != start:  # change here
                     # print(position)
@@ -171,7 +181,10 @@ class Agent:
                         path.append(position)
                         path.append(position)
                         shoot_list.append(1)
+                        map_list.append(temp_check_map)
                         shoot_list.append(0)
+                        map_list.append(trace[position[0]][position[1]][3])
+                        temp_check_map = trace[position[0]][position[1]][3]
                         direction_list.append(trace[position[0]][position[1]][2])
                         direction_list.append(trace[position[0]][position[1]][2])
                         position = trace[position[0]][position[1]][0]
@@ -181,6 +194,8 @@ class Agent:
                         path.append(position)
                         shoot_list.append(0)
                         direction_list.append(trace[position[0]][position[1]][2])
+                        map_list.append(trace[position[0]][position[1]][3])
+                        temp_check_map = trace[position[0]][position[1]][3]
                         position = trace[position[0]][position[1]][0]
                         check_sort = trace[position[0]][position[1]][1]
                 # direction_list.append(trace[position[0]][position[1]][1])
@@ -189,6 +204,7 @@ class Agent:
                 path.reverse()  # reverse the path to get from start to end
                 shoot_list.reverse()
                 direction_list.reverse()
+                map_list.reverse()
                 self.currentCave = start
                 self.map_game=old_map
                 self.knowledgePit=old_knowPit
@@ -198,7 +214,7 @@ class Agent:
                 self.G=old_g
                 self.direction= old_direction
                 # print(trace)
-                return path,shoot_list,direction_list, True
+                return path,shoot_list,direction_list,map_list, True
                 
             dem_temp = 0
             for x_offset,y_offset in moves:
@@ -495,73 +511,6 @@ class Agent:
             else:
                 self.updateWumPus(self.currentCave[0]+1,self.currentCave[1],"0")
                 self.updateWumPus(self.currentCave[0],self.currentCave[1],"0")
-        
-        
-        
-        # if self.direction == "left":
-        #     for i in range(self.currentCave[1],-1,-1):
-        #         if "W" in self.map_game[self.currentCave[0]][i]:
-        #             # self.updateWumPus(self.currentCave[0],i,"0")
-        #             self.updateWumPus(self.currentCave[0],self.currentCave[1]-1,"0")
-        #             self.updateWumPus(self.currentCave[0],self.currentCave[1],"0")
-        #             txt = self.map_game[self.currentCave[0]][i]
-        #             temp = txt[0:txt.index("W")]+txt[txt.index("W")+1:]
-        #             self.map_game[self.currentCave[0]][i]=temp
-        #             if self.map_game[self.currentCave[0]][i] == "":
-                        
-        #                 self.map_game[self.currentCave[0]][i]='-'
-        #             return True
-        # if self.direction == "right":
-        #     for i in range(self.currentCave[1],self.size):
-        #         if "W" in self.map_game[self.currentCave[0]][i]:
-        #             # self.updateWumPus(self.currentCave[0],i,"0")
-        #             self.updateWumPus(self.currentCave[0],self.currentCave[1]+1,"0")
-        #             self.updateWumPus(self.currentCave[0],self.currentCave[1],"0")
-        #             txt = self.map_game[self.currentCave[0]][i]
-        #             temp = txt[0:txt.index("W")]+txt[txt.index("W")+1:]
-        #             self.map_game[self.currentCave[0]][i]=temp
-        #             if self.map_game[self.currentCave[0]][i] == "":
-        #                 self.map_game[self.currentCave[0]][i]='-'
-        #             return True
-        # if self.direction == "up":
-        #     for i in range(self.currentCave[0],-1,-1):
-        #         if "W" in self.map_game[i][self.currentCave[1]]:
-        #             # self.updateWumPus(i,self.currentCave[1],"0")
-        #             self.updateWumPus(self.currentCave[0]-1,self.currentCave[1],"0")
-        #             self.updateWumPus(self.currentCave[0],self.currentCave[1],"0")
-        #             txt = self.map_game[i][self.currentCave[1]]
-        #             temp = txt[0:txt.index("W")]+txt[txt.index("W")+1:]
-        #             self.map_game[i][self.currentCave[1]]=temp
-        #             if self.map_game[i][self.currentCave[1]] == "":
-        #                 self.map_game[i][self.currentCave[1]]='-'
-        #             return True
-        # if self.direction == "down":
-        #     for i in range(self.currentCave[0],self.size):
-        #         if "W" in self.map_game[i][self.currentCave[1]]:
-        #             # self.updateWumPus(i,self.currentCave[1],"0")
-        #             self.updateWumPus(self.currentCave[0]+1,self.currentCave[1],"0")
-        #             self.updateWumPus(self.currentCave[0],self.currentCave[1],"0")
-        #             txt = self.map_game[i][self.currentCave[1]]
-        #             temp = txt[0:txt.index("W")]+txt[txt.index("W")+1:]
-        #             self.map_game[i][self.currentCave[1]]=temp
-        #             if self.map_game[i][self.currentCave[1]] == "":
-        #                 self.map_game[i][self.currentCave[1]]='-'
-        #             return True
-        
-        # if self.direction == "left":
-        #     for i in range(self.currentCave[1],-1,-1):
-        #         self.updateWumPus(self.currentCave[0],i,"0")
-        # if self.direction == "right":
-        #     for i in range(self.currentCave[1],self.size):
-        #         self.updateWumPus(self.currentCave[0],i,"0")
-                    
-        # if self.direction == "up":
-        #     for i in range(self.currentCave[0],-1,-1):
-        #         self.updateWumPus(i,self.currentCave[1],"0")
-        # if self.direction == "down":
-        #     for i in range(self.currentCave[0],self.size):
-        #         self.updateWumPus(i,self.currentCave[1],"0")
-        
         return False
     
     def updateMap(self):
@@ -624,8 +573,10 @@ class Agent:
         old_path = copy.deepcopy(self.path)
         old_direction_list = copy.deepcopy(self.direction_list)
         old_grab = copy.deepcopy(self.grab)
+        old_map_list = copy.deepcopy(self.map_list)
         
         temp_point = self.point[-1]
+        
         
         self.direction = direction
         if check_style == 1:
@@ -634,8 +585,12 @@ class Agent:
             self.direction_list.append(direction)
             self.point.append(temp_point)
             is_scream = self.confirmScream()
+            temp_map = copy.deepcopy(self.map_game)
             if is_scream:
                 self.updateMap()
+                temp_map = copy.deepcopy(self.map_game)
+            self.map_list.append(temp_map)
+            
                 
             if "G" in self.map_game[start[0]][start[1]] and self.G[start[0]][start[1]] != "1":
                 self.grab.append(0)
@@ -656,6 +611,7 @@ class Agent:
         self.perceive()
         self.visited[start[0]][start[1]] = "1"
         self.path.append(start)
+        self.map_list.append(old_map)
         self.direction_list.append(direction)
         
         
@@ -687,9 +643,11 @@ class Agent:
         
         if "G" in self.map_game[start[0]][start[1]]:
             self.G[start[0]][start[1]] = "1"
-            temp_path,shoot_list,direction_list, exit_live = self.find_path_to_exit(start,(self.size-1,0))
+            temp_path,shoot_list,direction_list,map_list_return, exit_live = self.find_path_to_exit(start,(self.size-1,0))
             self.path.pop()
             self.path.extend(temp_path)
+            # self.map_list.pop()
+            self.map_list.extend(map_list_return)
             path_exit = len(temp_path)
             for i in range(1,path_exit):
                 point_temp = self.point[-1]
@@ -721,7 +679,7 @@ class Agent:
             
             self.shoot.extend(shoot_list)
             self.direction_list.extend(direction_list)
-            return self.path,self.point,self.shoot,self.direction_list,self.grab, "Stop"
+            return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "Stop"
         else:
             moves = [(0, 1), (0, -1), (-1, 0),(1, 0)]
             
@@ -755,9 +713,11 @@ class Agent:
                             xynew = (-1,0)
                         if start[0]+xynew[0] < 0 or start[0]+xynew[0] >= self.size or start[1]+xynew[1] < 0 or start[1]+xynew[1] >= self.size:
                             if self.try_stop == 0:
-                                temp_path,shoot_list,direction_list, exit_live = self.find_path_to_exit(start,(self.size-1,0))
+                                temp_path,shoot_list,direction_list,map_list_return, exit_live = self.find_path_to_exit(start,(self.size-1,0))
                                 self.path.pop()
                                 self.path.extend(temp_path)
+                                self.map_list.pop()
+                                self.map_list.extend(map_list_return)
                                 path_exit = len(temp_path)
                                 for i in range(1,path_exit):
                                     point_temp = self.point[-1]
@@ -788,7 +748,7 @@ class Agent:
                     
                                 self.shoot.extend(shoot_list)
                                 self.direction_list.extend(direction_list)
-                                return self.path,self.point,self.shoot,self.direction_list,self.grab, "Stop"
+                                return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "Stop"
                             self.try_stop -= 1
                             if direction == "left":
                                 go_max = [(1,0),(-1,0)]
@@ -1004,9 +964,9 @@ class Agent:
                     path_can_go.extend(kill_wumpus)
 
             for step in path_can_go:
-                path_find, point_path,fire,list_direction,grab, check = self.find_path((step[0],step[1]),start,step[2],step[3],step[4])
+                path_find, point_path,fire,list_direction,grab,map_list, check = self.find_path((step[0],step[1]),start,step[2],step[3],step[4])
                 if check == "Stop":
-                    return path_find,point_path,fire,list_direction,grab, "Stop"
+                    return path_find,point_path,fire,list_direction,grab,map_list, "Stop"
                 self.P = old_matrix_pit
                 self.W = old_matrix_wum
                 self.knowledgePit = old_knowledge_pit
@@ -1016,8 +976,9 @@ class Agent:
                 self.point = old_point
                 self.shoot = old_shoot
                 self.path = old_path
-                self.direction_list=old_direction_list
+                self.direction_list = old_direction_list
                 self.grab = old_grab
+                self.map_list = old_map_list
                 self.path.pop()
             
             
