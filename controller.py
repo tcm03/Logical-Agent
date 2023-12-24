@@ -126,9 +126,9 @@ class GameController():
         else: return False
     
     def view_map(self):
-        print(self.__state.has_wumpus)
-        print(self.__state.has_pit)
-        print(self.__state.has_gold)
+        # print(self.__state.has_wumpus)
+        # print(self.__state.has_pit)
+        # print(self.__state.has_gold)
         map_matrix = [['-' for _ in range(self.__state.size)] for _ in range(self.__state.size)]
         
         for i in range(self.__state.size):
