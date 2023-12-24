@@ -163,6 +163,7 @@ class GameController():
         
         for row in map_matrix:
             print('.'.join(row))
+        
     
     def __load_from_file(self, file_path):
         with open(file_path, 'r') as file:
@@ -231,7 +232,7 @@ class GameController():
             has_pit = has_pit,
             has_gold = has_gold
         )
-          
+
                 
     def __turn_left(self):
         if self.__state.direction == 'R':
