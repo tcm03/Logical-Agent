@@ -5,11 +5,6 @@ def find_path(start,old,check_style,offset,direction,map_game,gameController):
     if gameController.checkAgentDie(start,check_style):
         path_find, point_path,fire,list_direction,grab,map_list, check = gameController.getReturnParameter()
         return path_find, point_path,fire,list_direction,grab,map_list, check
-    # if gameController.checkGoldDetect(start):
-    #     gameController.solveAfterGetGold(start)
-    #     path_find, point_path,fire,list_direction,grab,map_list, check = gameController.getReturnParameter()
-    #     return path_find, point_path,fire,list_direction,grab,map_list, check
-    # else:
     path_can_go = gameController.getPathCanGo(start,check_style,offset,direction,old)
     if path_can_go[-1] == "StopUnsure":
         return path_can_go

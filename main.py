@@ -64,12 +64,16 @@ path, point,shoot,direction,grab,map_list, check = find_path(start_position,old_
 
 
 print(path)  #danh sách các bước đi của agent. Bước đi cuối cùng khi vẽ UI nên check thử có trùng với vị trí exit không nếu có thì nghĩa là đã climb ngược lại thì không.
+if path[-1] == (N-1,0):
+    print("Climb")
+else:
+    print("Not climb")
 print(point) #điểm hiện tại của agent tương ứng với tường bước đi. Điểm đã được tính từ vị trí đầu đến cuối nên không cần xử lý thêm
 print(shoot) #agent có bắn mũi tên tại vị trí đó hay không(0: không bắn, 1: có bắn). Nếu bắn cung thì tại vị trí đó path sẽ có hiện ô tiếp theo nó đi nhưng chưa di chuyển qua.
 print(direction) #hướng hiện tại của agent (right left top down)
 print(grab) #agent có nhặt vàng tại vị trí đó hay không (0: là không nhặt, 1 là có nhặt)
-
-
+print(map_list) # danh sách các map tại từng bước của agent. Mỗi map kết hợp với các mảng trên để xét perceive của mỗi ô agent đang đứng
+print(check) # gồm Stop, StopUnsure. Nếu là Stop thì agent đã chết hoặc leo ra khỏi map. Ngược lại thì agent dừng vì 4 ô xung quang nó đều nguy hiểm nên không tiến hành đi nữa 
 
 
 

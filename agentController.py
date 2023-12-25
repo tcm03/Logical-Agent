@@ -349,9 +349,6 @@ class AgentController:
     def getReturnParameter(self):
         return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list,"Stop"
     
-    def checkGoldDetect(self,start):
-        return "G" in self.map_game[start[0]][start[1]] and self.G[start[0]][start[1]] != "1"
-    
     def find_path_to_exit(self, start, end):
         trace = []
         visited = []
@@ -554,37 +551,6 @@ class AgentController:
                 old_g3 = copy.deepcopy(self.G)
                 frontier.put([cost+1,(next_x1,next_y1),(x,y),check_direction_ran,0,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3]) 
 
-    def solveAfterGetGold(self,start):
-        self.G[start[0]][start[1]] = "1"
-        temp_path,shoot_list,direction_list,map_list_return, exit_live = self.find_path_to_exit(start,(self.size-1,0))
-        self.path.pop()
-        self.path.extend(temp_path)
-        self.map_list.extend(map_list_return)
-        path_exit = len(temp_path)
-        for i in range(1,path_exit):
-            point_temp = self.point[-1]
-            if shoot_list[i] == 1:
-                point_temp -= 100
-            if "G" in self.map_game[temp_path[i][0]][temp_path[i][1]] and self.G[temp_path[i][0]][temp_path[i][1]]!="1":
-                point_temp += 1000
-                self.G[temp_path[i][0]][temp_path[i][1]] = "1"
-                self.grab.append(1)
-            else:
-                self.grab.append(0)
-            if "P" in self.map_game[temp_path[i][0]][temp_path[i][1]]:
-                point_temp -= 10000
-            if "W" in self.map_game[temp_path[i][0]][temp_path[i][1]] and not exit_live:
-                point_temp -= 10000
-            if shoot_list[i] == 1:
-                self.point.append(point_temp)
-            else:
-                self.point.append(point_temp-10)
-        if exit_live:
-            self.point[-1] += 10
-        shoot_list = shoot_list[1:]
-        self.shoot.extend(shoot_list)
-        self.direction_list.extend(direction_list)
-        
     def getPathCanGo(self,start,check_style,offset,direction,old):
         moves = [(0, 1), (0, -1), (-1, 0),(1, 0)]
         path_can_go = []
