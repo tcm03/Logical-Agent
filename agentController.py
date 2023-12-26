@@ -288,7 +288,6 @@ class AgentController:
         self.currentCave = {x,y}
     
     def updatePerceiveAgent(self,start,map_game,old,check_style,direction):
-        print("old: ",old)
         self.currentCave = start
         self.map_game = map_game
         if old == (-1,-1):
@@ -309,6 +308,9 @@ class AgentController:
             if is_scream == True:
                 self.updateMap()
                 temp_map = copy.deepcopy(self.map_game)
+                self.shoot.append((1,1))
+            else:
+                self.shoot.append((1,0))
             self.map_list.append(temp_map)
             self.map_list.append(temp_map)
             self.currentCave= start
@@ -328,12 +330,13 @@ class AgentController:
         self.path.append(start)
         if check_style != 1:
             self.map_list.append(copy.deepcopy(self.map_game))
+        self.shoot.append((0,0))
         self.direction_list.append(direction)
-        if check_style == 1:
-            self.shoot.append(1)
-            self.shoot.append(0)
-        else:
-            self.shoot.append(0)
+        # if check_style == 1:
+        #     self.shoot.append(1)
+        #     self.shoot.append(0)
+        # else:
+        #     self.shoot.append(0)
         if old != (-1,-1):
             if "P" in self.map_game[start[0]][start[1]]:
                 temp_point -= 10000
@@ -392,6 +395,7 @@ class AgentController:
             self.G=old_g2
             self.direction= direction
             self.currentCave = old_position
+            kiemtra = False
             if is_shoot == 1:
                 kiemtra = self.confirmScream()
                 if kiemtra:
@@ -402,7 +406,7 @@ class AgentController:
             if visited[x][y]:
                 continue
             visited[x][y] = True
-            trace[x][y] = (old_position,is_shoot,direction,old_map2)
+            trace[x][y] = (old_position,is_shoot,direction,old_map2,kiemtra)
             if self.map_game[x][y] == "P" or ("W" in self.map_game[x][y] and is_shoot == 0):
                 self.currentCave = start
                 self.map_game=old_map
@@ -413,7 +417,7 @@ class AgentController:
                 self.G=old_g
                 self.direction= old_direction
                 path = []
-                shoot_list = [0]
+                shoot_list = [(0,0)]
                 direction_list = []
                 check_sort = is_shoot
                 map_list = []
@@ -422,9 +426,12 @@ class AgentController:
                     if check_sort == 1:
                         path.append(position)
                         # path.append(position)
-                        shoot_list.append(1)
+                        if kiemtra:
+                            shoot_list.append((1,1))
+                        else:
+                            shoot_list.append((1,0))
                         map_list.append(temp_check_map)
-                        shoot_list.append(0)
+                        shoot_list.append((0,0))
                         # map_list.append(trace[position[0]][position[1]][3])
                         map_list.append(temp_check_map)
                         temp_check_map = trace[position[0]][position[1]][3]
@@ -433,14 +440,16 @@ class AgentController:
                         position = trace[position[0]][position[1]][0]
                         path.append(position)
                         check_sort = trace[position[0]][position[1]][1]
+                        kiemtra = trace[position[0]][position[1]][4]
                     else:
                         path.append(position)
-                        shoot_list.append(0)
+                        shoot_list.append((0,0))
                         direction_list.append(trace[position[0]][position[1]][2])
                         map_list.append(trace[position[0]][position[1]][3])
                         temp_check_map = trace[position[0]][position[1]][3]
                         position = trace[position[0]][position[1]][0]
                         check_sort = trace[position[0]][position[1]][1]
+                        kiemtra = trace[position[0]][position[1]][4]
                 path.append(start)  
                 path.reverse()  
                 shoot_list.reverse()
@@ -457,7 +466,7 @@ class AgentController:
                 self.G=old_g
                 self.direction= old_direction
                 path = []
-                shoot_list = [0]
+                shoot_list = [(0,0)]
                 direction_list = []
                 check_sort = is_shoot
                 map_list = []
@@ -466,9 +475,12 @@ class AgentController:
                     if check_sort == 1:
                         path.append(position)
                         # path.append(position)
-                        shoot_list.append(1)
+                        if kiemtra:
+                            shoot_list.append((1,1))
+                        else:
+                            shoot_list.append((1,0))
                         map_list.append(temp_check_map)
-                        shoot_list.append(0)
+                        shoot_list.append((0,0))
                         # map_list.append(trace[position[0]][position[1]][3])
                         map_list.append(temp_check_map)
                         temp_check_map = trace[position[0]][position[1]][3]
@@ -477,14 +489,16 @@ class AgentController:
                         position = trace[position[0]][position[1]][0]
                         path.append(position)
                         check_sort = trace[position[0]][position[1]][1]
+                        kiemtra = trace[position[0]][position[1]][4]
                     else:
                         path.append(position)
-                        shoot_list.append(0)
+                        shoot_list.append((0,0))
                         direction_list.append(trace[position[0]][position[1]][2])
                         map_list.append(trace[position[0]][position[1]][3])
                         temp_check_map = trace[position[0]][position[1]][3]
                         position = trace[position[0]][position[1]][0]
                         check_sort = trace[position[0]][position[1]][1]
+                        kiemtra = trace[position[0]][position[1]][4]
                 path.append(start)
                 path.reverse()
                 shoot_list.reverse()
