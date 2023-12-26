@@ -288,6 +288,7 @@ class AgentController:
         self.currentCave = {x,y}
     
     def updatePerceiveAgent(self,start,map_game,old,check_style,direction):
+        print("old: ",old)
         self.currentCave = start
         self.map_game = map_game
         if old == (-1,-1):
@@ -298,15 +299,17 @@ class AgentController:
         if check_style == 1:
             temp_point -= 100
             self.currentCave = self.path[-1]
-            self.path.append(start)
+            # self.path.append(start)
+            self.path.append(old)
             self.direction_list.append(direction)
             self.point.append(temp_point)
             temp_map = copy.deepcopy(self.map_game)
             is_scream = self.confirmScream()
-            self.map_list.append(temp_map)
+            # self.map_list.append(temp_map)
             if is_scream == True:
                 self.updateMap()
                 temp_map = copy.deepcopy(self.map_game)
+            self.map_list.append(temp_map)
             self.map_list.append(temp_map)
             self.currentCave= start
             if "G" in self.map_game[start[0]][start[1]] and self.G[start[0]][start[1]] != "1":
@@ -418,15 +421,17 @@ class AgentController:
                 while position != start:
                     if check_sort == 1:
                         path.append(position)
-                        path.append(position)
+                        # path.append(position)
                         shoot_list.append(1)
                         map_list.append(temp_check_map)
                         shoot_list.append(0)
-                        map_list.append(trace[position[0]][position[1]][3])
+                        # map_list.append(trace[position[0]][position[1]][3])
+                        map_list.append(temp_check_map)
                         temp_check_map = trace[position[0]][position[1]][3]
                         direction_list.append(trace[position[0]][position[1]][2])
                         direction_list.append(trace[position[0]][position[1]][2])
                         position = trace[position[0]][position[1]][0]
+                        path.append(position)
                         check_sort = trace[position[0]][position[1]][1]
                     else:
                         path.append(position)
@@ -460,15 +465,17 @@ class AgentController:
                 while position != start: 
                     if check_sort == 1:
                         path.append(position)
-                        path.append(position)
+                        # path.append(position)
                         shoot_list.append(1)
                         map_list.append(temp_check_map)
                         shoot_list.append(0)
-                        map_list.append(trace[position[0]][position[1]][3])
+                        # map_list.append(trace[position[0]][position[1]][3])
+                        map_list.append(temp_check_map)
                         temp_check_map = trace[position[0]][position[1]][3]
                         direction_list.append(trace[position[0]][position[1]][2])
                         direction_list.append(trace[position[0]][position[1]][2])
                         position = trace[position[0]][position[1]][0]
+                        path.append(position)
                         check_sort = trace[position[0]][position[1]][1]
                     else:
                         path.append(position)
