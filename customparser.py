@@ -14,13 +14,21 @@ def read_map(file_path):
 
 def infer_information(world_map):
     size = len(world_map)
+    i, j = -1, -1
     for row in range(size):
         for col in range(size):
             if 'W' in world_map[row][col]:
                 update_adjacent(world_map, row, col, 'S')
             if 'P' in world_map[row][col]:
                 update_adjacent(world_map, row, col, 'B')
-
+            if 'A' in world_map[row][col]:
+                if len(world_map[row][col]) == 1:
+                    world_map[row][col] = '-'
+                    i = row
+                    j = col
+                else:
+                    world_map[row][col].replace("A", "")
+    return world_map, (i, j)
 
 def update_adjacent(world_map, row, col, perception):
     size = len(world_map)
@@ -49,8 +57,3 @@ def generate_map(width, height):
                 room = "G"
             map[i][j] = room
     return map
-
-map_read = read_map('test_input.txt')
-print(map_read)
-infer_information(map_read)
-print(map_read)
