@@ -1,5 +1,6 @@
 import pygame
 import sys
+import time
 
 import customparser
 
@@ -11,20 +12,72 @@ from button import *
 
 from simple_controller import *
 
+class TextScroll:
+    def __init__(self, area, font, fg_color, bk_color, ms_per_line=800):
+        """object to display lines of text scrolled in with a delay between each line
+        in font and fg_color with background o fk_color with in the area rect"""
+
+        super().__init__()
+        self.rect = area.copy()
+        self.fg_color = fg_color
+        self.bk_color = bk_color
+        self.size = area.size
+        self.surface = pygame.Surface(self.size, flags=pygame.SRCALPHA)
+        self.surface.fill(bk_color)
+        self.font = font
+        self.lines = []
+        self.ms_per_line = ms_per_line
+        self.y = 0
+        self.y_delta = self.font.size("M")[1]
+        self.next_time = None
+        self.dirty = False
+
+    def _update_line(self, line):  # render next line if it's time
+        if self.y + self.y_delta > self.size[1]:  # line does not fit in remaining space
+            self.surface.blit(self.surface, (0, -self.y_delta))  # scroll up
+            self.y += -self.y_delta  # backup a line
+            pygame.draw.rect(self.surface, self.bk_color,
+                             (0, self.y, self.size[0], self.size[1] - self.y))
+
+        text = self.font.render(line, True, self.fg_color)
+        # pygame.draw.rect(text, GREY, text.get_rect(), 1)  # for demo show render area
+        self.surface.blit(text, (0, self.y))
+
+        self.y += self.y_delta
+
+    # call update from pygame main loop
+    def update(self):
+
+        time_now = time.time()
+        if (self.next_time is None or self.next_time < time_now) and self.lines:
+            self.next_time = time_now + self.ms_per_line / 1000
+            line = self.lines.pop(0)
+            self._update_line(line)
+            self.dirty = True
+            self.update()  # do it again to catch more than one event per tick
+
+    # call draw from pygam main loop after update
+    def draw(self, screen):
+        if self.dirty:
+            screen.blit(self.surface, self.rect)
+            self.dirty = False
+
+    def append_text(self, log):
+        self.lines = log
 
 class Game:
-    def __init__(self, controller):
+    def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode(WINDOW_SIZE)
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
         pygame.key.set_repeat(500, 100)
 
-        self.controller = controller
+        self.controller = SimpleController()
 
         self.score = 0
         self.current_percept = None
-        self.log = []
+        self.action_log = []
         self.map = []
 
         self.load_data()
@@ -113,10 +166,11 @@ class Game:
 
         self.draw_log()
         self.draw_percept()
-        self.draw_text(f"Log", get_font(30), (0, 0, 255), WINDOW_SIZE[0] - 150, 60)
-        self.draw_text(f"Percept", get_font(30), (0, 0, 255), WINDOW_SIZE[0] - 150, 500)
-        self.draw_text(f"Score:{self.score}", get_font(30), (0, 0, 255), WINDOW_SIZE[0] - 150, 20)
 
+
+        self.draw_text(f"Score:{self.score}", get_font(30), (0, 0, 0), WINDOW_SIZE[0] - 150, 20)
+        pygame.draw.line(self.screen, (255,0,0), (320, 80), (320, 100), 5)
+        pygame.draw.line(self.screen, (255,0,0), (60, 80), (130, 100), 5)
         pygame.display.update()
 
     def draw_notification_rect(self):
@@ -126,25 +180,28 @@ class Game:
         self.screen.blit(notification_surf, notification_rect)
 
     def draw_percept(self):
-        percept_surf = pygame.Surface((300, 250))
+        self.draw_text(f"Percept", get_font(30), (0, 0, 255), WINDOW_SIZE[0] - 160, 420)
+        percept_surf = pygame.Surface((300, 180))
         percept_surf.fill(WHITE)
-        precept_rect = percept_surf.get_rect(bottomright=(WINDOW_SIZE[0] - 10, WINDOW_SIZE[1] - 10))
+        precept_rect = percept_surf.get_rect(topright=(WINDOW_SIZE[0] - 10, 450))
         self.screen.blit(percept_surf, precept_rect)
-
-        y_position = 530
+        y_position = 470
         for p in self.current_percept:
-            self.draw_text(p, get_font(20), BLACK, WINDOW_SIZE[0] - 150, y_position)
-            y_position += 20
+            self.draw_text(p, get_font(20), BLACK, WINDOW_SIZE[0] - 10 - 150, y_position)
+            y_position += 25
+
 
     def draw_log(self):
-        log_surf = pygame.Surface((300, 350))
+        self.draw_text(f"Log", get_font(30), (0, 0, 255), WINDOW_SIZE[0] - 160, 70)
+        log_surf = pygame.Surface((300, 260))
         log_surf.fill(WHITE)
-        log_rect = log_surf.get_rect(topright=(WINDOW_SIZE[0] - 10, 40))
+        log_rect = log_surf.get_rect(topright=(WINDOW_SIZE[0] - 10, 100))
         self.screen.blit(log_surf, log_rect)
-        y_position = 90
-        for l in self.log:
-            self.draw_text(l, get_font(20), BLACK, WINDOW_SIZE[0] - 150, y_position)
-            y_position += 20
+        y_position = 120
+        for l in self.action_log[-10:]:
+            self.draw_text(l, get_font(20), BLACK, WINDOW_SIZE[0] - 10 - 150, y_position)
+            y_position += 25
+
 
     def draw_object(self):
         for row, tiles in enumerate(self.map):
@@ -176,7 +233,7 @@ class Game:
         if len(info) > 0:
             self.player.sprite.move_to(info["position"][::-1])
             self.score = info["score"]
-            self.log.append(info["log"])
+            self.action_log.append(info["log"])
             self.current_percept = info["percept"]
             if info["shoot"] == 1:
                 self.player.sprite.shoot(False)
@@ -184,6 +241,7 @@ class Game:
                 self.player.sprite.grab()
             self.map = info["map"]
             self.player.sprite.rotate(info["direction"])
+
 
     def main_menu(self):
         while True:
@@ -212,11 +270,11 @@ class Game:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
-                        # root = Tk()
-                        # root.withdraw()
-                        # file_dir = askopenfilename()
-                        # root.destroy()
-                        # print(file_dir)
+                        root = Tk()
+                        root.withdraw()
+                        file_dir = askopenfilename()
+                        root.destroy()
+                        print(file_dir)
                         self.run()
                     if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                         pygame.quit()
@@ -226,8 +284,8 @@ class Game:
 
 
 # create the game object
-controller = SimpleController()
-g = Game(controller)
+# controller = SimpleController()
+g = Game()
 while True:
     g.new()
     g.main_menu()
