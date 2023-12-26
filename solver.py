@@ -1,4 +1,6 @@
-
+import copy
+from agentController import AgentController
+from customparser import read_map, infer_information
 
 def find_path(start,old,check_style,offset,direction,map_game,gameController):
     gameController.updatePerceiveAgent(start,map_game,old,check_style,direction)
@@ -15,4 +17,21 @@ def find_path(start,old,check_style,offset,direction,map_game,gameController):
         path_find, point_path,fire,list_direction,grab,map_list, check = find_path((step[0], step[1]),start,step[2],step[3],step[4],step[5],gameController)
         if check == "Stop":
             return path_find,point_path,fire,list_direction,grab,map_list, "Stop"
-            
+
+
+def getParameterUI(path_name):
+    map_game = read_map(path_name)
+    if map_game is None:
+        return None
+    world_map , start = infer_information(map_game)
+    N = 4 # kích thước mảng khi đọc vào
+    start_position = start # vị trí bắt đầu của agent trong map
+    old_position = (-1,-1) # vị trí trước khi đi đến ô bắt đầu (mặc định khi khởi tạo luôn là (-1,-1))
+    check_style = 0 # có 0,1,2( 0: ô bình thường an toàn không xét, 1 ô xét bắn cung, 2: ô nghi ngờ không chắc chắn)  )
+    offset = None # moves vừa mới đi (0,1) (0,-1) (1,0) (-1,0) để xét trường hợp quay lui khi không có ô nào để đi
+    direction = "right" # hướng đi mặc định ban đầu luôn luôn là right. Ngoài ra còn có left, up, down
+    map_game_copy = copy.deepcopy(world_map) # mảng ban đầu truyền vào sau khi đọc (mục đích để lưu phục vụ vẽ UI)
+
+    gameController = AgentController(N,world_map)
+    path_list, point_list,shoot_list,direction_list,grab_list,map_list, _ = find_path(start_position,old_position,check_style, offset,direction,map_game_copy,gameController)
+    return path_list, point_list,shoot_list,direction_list,grab_list,map_list
