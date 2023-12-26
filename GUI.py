@@ -3,6 +3,9 @@ import sys
 
 import customparser
 
+from tkinter.filedialog import askopenfilename
+from tkinter import *
+
 from sprite import *
 from button import *
 
@@ -10,14 +13,14 @@ from simple_controller import *
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, controller):
         pygame.init()
         self.screen = pygame.display.set_mode(WINDOW_SIZE)
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
         pygame.key.set_repeat(500, 100)
 
-        self.controller = SimpleController()
+        self.controller = controller
 
         self.score = 0
         self.current_percept = None
@@ -209,6 +212,11 @@ class Game:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                        # root = Tk()
+                        # root.withdraw()
+                        # file_dir = askopenfilename()
+                        # root.destroy()
+                        # print(file_dir)
                         self.run()
                     if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                         pygame.quit()
@@ -218,7 +226,8 @@ class Game:
 
 
 # create the game object
-g = Game()
+controller = SimpleController()
+g = Game(controller)
 while True:
     g.new()
     g.main_menu()
