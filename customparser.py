@@ -12,7 +12,6 @@ def read_map(file_path):
         print(f"File not found: {file_path}")
         return None
 
-
 def infer_information(world_map):
     size = len(world_map)
     for row in range(size):
@@ -33,9 +32,7 @@ def update_adjacent(world_map, row, col, perception):
             if world_map[new_row][new_col] == '-':
                 world_map[new_row][new_col] = perception
             else:
-                world_map[new_row][new_col] = ",".join([world_map[new_row][new_col], perception])
-
-
+                world_map[new_row][new_col] = "".join([world_map[new_row][new_col], perception])
 
 def generate_map(width, height):
     map = [["-" for i in range(width)] for i in range(height)]
@@ -52,3 +49,8 @@ def generate_map(width, height):
                 room = "G"
             map[i][j] = room
     return map
+
+map_read = read_map('test_input.txt')
+print(map_read)
+infer_information(map_read)
+print(map_read)

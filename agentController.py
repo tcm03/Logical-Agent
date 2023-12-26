@@ -283,11 +283,10 @@ class AgentController:
     def updateGold(self, x, y, check):
         if "G" in self.map_game[x][y]:
             self.G[x][y] = check
-        
     
     def updateCurrentState(self,x,y):
         self.currentCave = {x,y}
-        
+    
     def updatePerceiveAgent(self,start,map_game,old,check_style,direction):
         self.currentCave = start
         self.map_game = map_game
@@ -342,7 +341,7 @@ class AgentController:
                 temp_point -= 10000
             temp_point -= 10
             self.point.append(temp_point)
-            
+    
     def checkAgentDie(self,start,check_style):
         return "P" in self.map_game[start[0]][start[1]] or ("W" in self.map_game[start[0]][start[1]] and self.W[start[0]][start[1]]=="1" and check_style != 1)
     
@@ -789,7 +788,6 @@ class AgentController:
                                 
                                 if self.visited[check_next_x][check_next_y] == "-1":
                                     check_unvisited += 1
-                            
                             
                             if check_unvisited == 0:
                                 self.visited[old[0]+xynew[0]][old[1]+xynew[1]] = "-1"

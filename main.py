@@ -37,12 +37,7 @@ from solver import find_path
 # Map hợp lệ khi đã cập nhật breeze và squeeze(Lưu ý map_game ở dưới là hợp lệ, trong khi map_game1
 # chưa cập nhât squeeze tại W). Mỗi ô nếu có cập nhật squeeze và brezze chỉ cập nhật 1 S hoặc 1B)
 """
-map_game = [
-                 ['B', 'S', 'SW', 'S'], # Rooms [1,1] to [4,1]
-                 ['P', 'SB', 'SW', 'S'], # Rooms [1,2] to [4,2] 
-                 ['B', '-', 'S', '-'], # Rooms [1,3] to [4,3]
-                 ['-', '-', '-', '-'], # Rooms [1,4] to [4,4]
-                ]
+map_game = [['B', 'S', 'WS', 'S'], ['P', 'BS', 'WS', 'S'], ['B', '-', 'S', '-'], ['A', '-', '-', '-']]
 
 map_game1 = [
                  ['B', 'S', 'W', 'S'], # Rooms [1,1] to [4,1]

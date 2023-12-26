@@ -300,3 +300,4 @@ class GameController():
         elif self.__state.direction == 'U' and self.__state.position[0] > 0 and self.__state.has_wumpus[self.__state.position[0]-1, self.__state.position[1]]:
             self.__state.has_wumpus[self.__state.position[0]-1, self.__state.position[1]] = False
             self.__state.has_scream = True
+            

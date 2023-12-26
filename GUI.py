@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-import parser
+import customparser
 
 from sprite import *
 from button import *
@@ -27,8 +27,8 @@ class Game:
         self.load_data()
 
     def load_data(self):
-        self.map = parser.read_map("test_input.txt")
-        parser.infer_information(self.map)
+        self.map = customparser.read_map("test_input.txt")
+        customparser.infer_information(self.map)
         self.num_height = len(self.map)
         self.num_width = len(self.map[0])
         self.offset_x = (960 - self.num_width * ROOM_SIZE) // 2
