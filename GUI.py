@@ -19,8 +19,6 @@ class Game:
         self.clock = pygame.time.Clock()
         pygame.key.set_repeat(500, 100)
 
-        self.controller = SimpleController()
-
         self.score = 0
         self.current_percept = None
         self.action_log = []
@@ -48,12 +46,12 @@ class Game:
 
         self.draw_object()
 
-    def run(self):
+    def run(self, controller):
         # game loop - set self.playing = False to end the game
         self.playing = True
         while self.playing:
             self.dt = self.clock.tick(FPS)
-            self.consume()
+            self.consume(controller)
             self.events()
             self.update()
             self.draw()
@@ -145,7 +143,7 @@ class Game:
         self.screen.blit(log_surf, log_rect)
         y_position = 120
         for l in self.action_log[-10:]:
-            self.draw_text(l, get_font(20), BLACK, WINDOW_SIZE[0] - 10 - 150, y_position)
+            self.draw_text(str(l), get_font(20), BLACK, WINDOW_SIZE[0] - 10 - 150, y_position)
             y_position += 25
 
 
@@ -174,8 +172,8 @@ class Game:
             if event.type == pygame.QUIT:
                 self.quit()
 
-    def consume(self):
-        info = self.controller.get_action()
+    def consume(self, controller):
+        info = controller.get_action()
         if len(info) > 0:
             self.player.sprite.move_to(info["position"][::-1])
             self.score = info["score"]
@@ -221,7 +219,9 @@ class Game:
                         file_dir = askopenfilename()
                         root.destroy()
                         print(file_dir)
-                        self.run()
+                        controller = SimpleController(file_dir)
+                        print(controller.get_percept())
+                        self.run(controller)
                     if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                         pygame.quit()
                         sys.exit()
