@@ -57,3 +57,9 @@ def generate_map(width, height):
                 room = "G"
             map[i][j] = room
     return map
+
+map_game = read_map("test_input.txt")
+print(map_game)
+world, a = infer_information(map_game)
+print(world)
+print(a)

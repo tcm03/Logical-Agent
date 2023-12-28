@@ -24,7 +24,7 @@ def getParameterUI(path_name):
     if map_game is None:
         return None
     world_map , start = infer_information(map_game)
-    N = 4 # kích thước mảng khi đọc vào
+    N = len(world_map) # kích thước mảng khi đọc vào
     start_position = start # vị trí bắt đầu của agent trong map
     old_position = (-1,-1) # vị trí trước khi đi đến ô bắt đầu (mặc định khi khởi tạo luôn là (-1,-1))
     check_style = 0 # có 0,1,2( 0: ô bình thường an toàn không xét, 1 ô xét bắn cung, 2: ô nghi ngờ không chắc chắn)  )
@@ -33,5 +33,69 @@ def getParameterUI(path_name):
     map_game_copy = copy.deepcopy(world_map) # mảng ban đầu truyền vào sau khi đọc (mục đích để lưu phục vụ vẽ UI)
 
     gameController = AgentController(N,world_map)
+    
     path_list, point_list,shoot_list,direction_list,grab_list,map_list, _ = find_path(start_position,old_position,check_style, offset,direction,map_game_copy,gameController)
-    return path_list, point_list,shoot_list,direction_list,grab_list,map_list
+    
+    temp_n = len(path_list)
+    temp_past_list = []
+    temp_point_list = []
+    temp_shoot_list = []
+    temp_direction_list = []
+    temp_grab_list = []
+    temp_map_list = []
+    
+    action_list = []
+    
+    for i in range(temp_n):
+        
+        if i == 0:
+            action_list.append("Start")
+        else:
+            action_list.append("Forward")
+        temp_past_list.append(path_list[i])
+        temp_point_list.append(point_list[i])
+        temp_shoot_list.append((0,0))
+        temp_grab_list.append(0)
+        temp_map_list.append(map_list[i])
+        temp_direction_list.append(direction_list[i])
+        
+        
+        if grab_list[i] == 1:
+            action_list.append("Grab")
+            temp_past_list.append(path_list[i])
+            temp_point_list.append(point_list[i])
+            temp_shoot_list.append((0,0))
+            temp_grab_list.append(grab_list[i])
+            temp_map_list.append(map_list[i])
+            temp_direction_list.append(direction_list[i])
+        
+        if i < temp_n -1:
+            if direction_list[i] != direction_list[i+1]:
+                action_list.append(f"Turn {direction_list[i+1]}")
+                temp_past_list.append(path_list[i])
+                temp_point_list.append(point_list[i])
+                temp_shoot_list.append((0,0))
+                temp_grab_list.append(0)
+                temp_map_list.append(map_list[i])
+                temp_direction_list.append(direction_list[i+1])
+            
+        if shoot_list[i][0] == 1:
+            action_list.append("Shoot")
+            temp_past_list.append(path_list[i])
+            temp_point_list.append(point_list[i])
+            temp_shoot_list.append(shoot_list[i])
+            temp_grab_list.append(0)
+            temp_map_list.append(map_list[i])
+            temp_direction_list.append(direction_list[i])
+            
+        if i == temp_n-1:
+            action_list.append("Climb")
+            temp_past_list.append(path_list[i])
+            temp_point_list.append(point_list[i])
+            temp_shoot_list.append((0,0))
+            temp_grab_list.append(0)
+            temp_map_list.append(map_list[i])
+            temp_direction_list.append(direction_list[i])
+            
+    
+    return temp_past_list, temp_point_list,temp_shoot_list,temp_direction_list,temp_grab_list,temp_map_list

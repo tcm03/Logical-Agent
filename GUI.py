@@ -27,7 +27,7 @@ class Game:
         self.load_data()
 
     def load_data(self):
-        self.map = customparser.read_map("test_input.txt")
+        self.map = customparser.read_map("text_input1.txt")
         customparser.infer_information(self.map)
         self.num_height = len(self.map)
         self.num_width = len(self.map[0])
