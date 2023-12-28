@@ -98,4 +98,4 @@ def getParameterUI(path_name):
             temp_direction_list.append(direction_list[i])
             
     
-    return temp_past_list, temp_point_list,temp_shoot_list,temp_direction_list,temp_grab_list,temp_map_list
+    return temp_past_list, temp_point_list,temp_shoot_list,temp_direction_list,temp_grab_list,temp_map_list,action_list
