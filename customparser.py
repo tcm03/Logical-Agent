@@ -39,13 +39,15 @@ def update_adjacent(world_map, row, col, perception):
         if 0 <= new_row < size and 0 <= new_col < size:
             if world_map[new_row][new_col] == '-':
                 world_map[new_row][new_col] = perception
+            if perception in world_map[new_row][new_col]:
+                continue
             else:
                 world_map[new_row][new_col] = "".join([world_map[new_row][new_col], perception])
 
-def generate_map(width, height):
-    map = [["-" for i in range(width)] for i in range(height)]
-    for i in range(height):
-        for j in range(width):
+def generate_map(size):
+    map = [["-" for i in range(size)] for i in range(size)]
+    for i in range(size):
+        for j in range(size):
             rand_num = random.random()  # Generate a random number between 0 and 1
             if rand_num < 0.6:  # 60% chance
                 continue
