@@ -70,7 +70,7 @@ class Game:
 
     def load_data(self, controller):
         self.controller = controller
-        self.size = 4
+        self.size = controller.size
         self.offset_x = (960 - self.size * ROOM_SIZE) // 2
         self.offset_y = (WINDOW_SIZE[1] - self.size * ROOM_SIZE) // 2
 
@@ -135,13 +135,15 @@ class Game:
         self.screen.fill(BGCOLOR)
         self.draw_grid()
 
-        self.draw_object()
 
         self.draw_notification_rect()
 
         self.draw_log()
         self.draw_percept()
+        # self.sound_effect.play_shoot(self.current_shoot[0], self.current_shoot[1])
+        # self.sound_effect.play_grab(self.current_grab)
 
+        self.draw_object()
         self.draw_text(f"Score:{self.score}", get_font(30), (0, 0, 0), WINDOW_SIZE[0] - 150, 20)
         # pygame.draw.line(self.screen, (255, 0, 0), (320, 80), (320, 100), 5)
         # pygame.draw.line(self.screen, (255, 0, 0), (60, 80), (130, 100), 5)
@@ -217,6 +219,10 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.playing = False
+                    self.main_menu()
 
     def consume(self):
         info = self.controller.get_information()
@@ -228,8 +234,8 @@ class Game:
             self.score = info["score"]
             self.action_log.append(info["action"])
             self.current_percept = info["percept"]
-            self.sound_effect.play_shoot(info["shoot"][0], info["shoot"][1])
-            self.sound_effect.play_grab(info["grab"])
+            self.current_shoot = info["shoot"]
+            self.current_grab = info["grab"]
             self.map = info["map"]
 
     def main_menu(self):
@@ -258,14 +264,13 @@ class Game:
                     self.quit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
-                        pass
-                        # root = Tk()
-                        # root.withdraw()
-                        # file_dir = askopenfilename()
-                        # root.destroy()
-                        # print(file_dir)
+                        root = Tk()
+                        root.withdraw()
+                        file_dir = askopenfilename()
+                        root.destroy()
+                        print(file_dir)
                         controller = SimpleController()
-                        controller.solver("test_input.txt")
+                        controller.solver(file_dir)
                         # print(controller.get_percept())
                         self.load_data(controller=controller)
                         self.run()

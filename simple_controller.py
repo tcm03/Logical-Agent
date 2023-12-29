@@ -28,6 +28,7 @@ import solver
 
 class SimpleController:
     def __init__(self):
+        self.size = None
         self.step = 0
         self.path = None
         self.score = None
@@ -46,6 +47,7 @@ class SimpleController:
         self.direction = direction_list
         self.grab = grab_list
         self.map = map_list
+        self.size = len(self.map[0])
         self.len = len(self.path)
         self.action = action_list
         
