@@ -27,9 +27,19 @@ import solver
 #
 
 class SimpleController:
-    def __init__(self, filepath_map):
+    def __init__(self):
         self.step = 0
-        path_list, point_list, shoot_list, direction_list, grab_list, map_list = solver.getParameterUI(filepath_map)
+        self.path = None
+        self.score = None
+        self.shoot = None
+        self.direction = None
+        self.grab = None
+        self.map = None
+        self.len = None
+        self.action = None
+        
+    def solver(self,filepath_map):
+        path_list, point_list, shoot_list, direction_list, grab_list, map_list, action_list = solver.getParameterUI(filepath_map)
         self.path = path_list
         self.score = point_list
         self.shoot = shoot_list
@@ -37,7 +47,8 @@ class SimpleController:
         self.grab = grab_list
         self.map = map_list
         self.len = len(self.path)
-
+        self.action = action_list
+        
     def get_action(self):
         information = {}
         if self.step < self.len:

@@ -20,7 +20,7 @@ class AgentController:
         self.path = []
         self.point = [0]
         self.shoot = []
-        self.try_stop = 1
+        self.try_stop = 0
         self.direction_list=[]
         self.grab = []
         self.map_list = []
@@ -290,6 +290,8 @@ class AgentController:
     def updatePerceiveAgent(self,start,map_game,old,check_style,direction):
         self.currentCave = start
         self.map_game = map_game
+        print("_______----_____")
+        print(start)
         if old == (-1,-1):
             self.P[start[0]][start[1]] = "0"
             self.W[start[0]][start[1]] = "0"
@@ -536,10 +538,10 @@ class AgentController:
                 if self.confirmPit(next_x,next_y) == "0" and self.confirmWumpus(next_x,next_y) == "0" and visited[next_x][next_y] != True:
                     frontier.put([cost+1,(next_x,next_y),(x,y),check_direction,0,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3])
                     dem_temp += 1
-                if self.confirmWumpus(next_x,next_y) == "1" and visited[next_x][next_y] != True:
+                if self.confirmWumpus(next_x,next_y) == "1" and visited[next_x][next_y] != True and self.confirmPit(next_x,next_y) == "0":
                     frontier.put([cost+100,(next_x,next_y),(x,y),check_direction,1,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3])
                     dem_temp += 1
-                if self.confirmWumpus(next_x,next_y) == "-1" and visited[next_x][next_y] != True:
+                if self.confirmWumpus(next_x,next_y) == "-1" and visited[next_x][next_y] != True and self.confirmPit(next_x,next_y) == "0":
                     frontier.put([cost+100,(next_x,next_y),(x,y),check_direction,1,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3])
                     dem_temp += 1
             if dem_temp == 0:
@@ -569,7 +571,8 @@ class AgentController:
                 old_p3 = copy.deepcopy(self.P)
                 old_w3 = copy.deepcopy(self.W)
                 old_g3 = copy.deepcopy(self.G)
-                frontier.put([cost+1,(next_x1,next_y1),(x,y),check_direction_ran,0,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3]) 
+                if self.confirmPit(next_x1,next_y1) == "0":
+                    frontier.put([cost+1,(next_x1,next_y1),(x,y),check_direction_ran,0,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3]) 
 
     def getPathCanGo(self,start,check_style,offset,direction,old):
         moves = [(0, 1), (0, -1), (-1, 0),(1, 0)]
@@ -644,7 +647,9 @@ class AgentController:
                                     if self.visited[check_next_x][check_next_y] == "-1":
                                         check_unvisited += 1
                                 if check_unvisited == 0:
-                                    self.visited[start[0]+xynew[0]][start[1]+xynew[1]] = "-1"
+                                    if self.confirmPit(start[0]+xynew[0],start[1]+xynew[1]) == "0":
+                                        self.visited[start[0]+xynew[0]][start[1]+xynew[1]] = "-1"
+                                    self.visited[start[0]][start[1]] = "1"
                                 break
                         elif direction == "right":
                             go_max = [(1,0),(-1,0)]
@@ -662,7 +667,9 @@ class AgentController:
                                         check_unvisited += 1
                                 
                                 if check_unvisited == 0:
-                                    self.visited[start[0]+xynew[0]][start[1]+xynew[1]] = "-1"
+                                    if self.confirmPit(start[0]+xynew[0],start[1]+xynew[1]) == "0":
+                                        self.visited[start[0]+xynew[0]][start[1]+xynew[1]] = "-1"
+                                    self.visited[start[0]][start[1]] = "1"
                                 break
                         elif direction == "up":
                             go_max = [(0,1),(0,-1)]
@@ -679,7 +686,9 @@ class AgentController:
                                     if self.visited[check_next_x][check_next_y] == "-1":
                                         check_unvisited += 1
                                 if check_unvisited == 0:
-                                    self.visited[start[0]+xynew[0]][start[1]+xynew[1]] = "-1"
+                                    if self.confirmPit(start[0]+xynew[0],start[1]+xynew[1]) == "0":
+                                        self.visited[start[0]+xynew[0]][start[1]+xynew[1]] = "-1"
+                                    self.visited[start[0]][start[1]] = "1"
                                 break
                         elif direction == "down":
                             go_max = [(0,1),(0,-1)]
@@ -696,23 +705,96 @@ class AgentController:
                                     if self.visited[check_next_x][check_next_y] == "-1":
                                         check_unvisited += 1
                                 if check_unvisited == 0:
-                                    self.visited[start[0]+xynew[0]][start[1]+xynew[1]] = "-1"
+                                    if self.confirmPit(start[0]+xynew[0],start[1]+xynew[1]) == "0":
+                                        self.visited[start[0]+xynew[0]][start[1]+xynew[1]] = "-1"
+                                    self.visited[start[0]][start[1]] = "1"
                                 break
-                    else:
+                    if start[0]+xynew[0] >= 0 and start[0]+xynew[0] < self.size and start[1]+xynew[1] >= 0 and start[1]+xynew[1] < self.size:
                         check_unvisited = 0
-                        for check_x,check_y in moves:
-                            check_next_x, check_next_y = start[0] + check_x, start[1] +check_y
-                            if check_next_x < 0 or check_next_x >= self.size or check_next_y < 0 or check_next_y >= self.size:
-                                continue
-                            if self.visited[check_next_x][check_next_y] == "-1":
-                                check_unvisited += 1
-                        if check_unvisited == 0:
-                            self.visited[start[0]+xynew[0]][start[1]+xynew[1]] = "-1"
+                        if direction == "left":
+                            go_max = [(1,0),(-1,0)]
+                            for move in go_max:
+                                next_x, next_y = start[0] + move[0], start[1] + move[1]
+                                if next_x < 0 or next_x >= self.size or next_y < 0 or next_y >= self.size:
+                                    continue
+                                xynew = move
+                                check_unvisited = 0
+                                for check_x,check_y in moves:
+                                    check_next_x, check_next_y = start[0] + check_x, start[1] +check_y
+                                    if check_next_x < 0 or check_next_x >= self.size or check_next_y < 0 or check_next_y >= self.size:
+                                        continue
+                                    if self.visited[check_next_x][check_next_y] == "-1" and (check_next_x, check_next_y)!=old:
+                                        check_unvisited += 1
+                                if check_unvisited == 0:
+                                    if self.confirmPit(start[0]+xynew[0],start[1]+xynew[1]) == "0":
+                                        self.visited[start[0]+xynew[0]][start[1]+xynew[1]] = "-1"
+                                    self.visited[start[0]][start[1]] = "1"
+                                break
+                        elif direction == "right":
+                            go_max = [(-1,0),(1,0)]
+                            for move in go_max:
+                                next_x, next_y = start[0] + move[0], start[1] + move[1]
+                                if next_x < 0 or next_x >= self.size or next_y < 0 or next_y >= self.size:
+                                    continue
+                                xynew = move
+                                check_unvisited = 0
+                                for check_x,check_y in moves:
+                                    check_next_x, check_next_y = start[0] + check_x, start[1] +check_y
+                                    if check_next_x < 0 or check_next_x >= self.size or check_next_y < 0 or check_next_y >= self.size:
+                                        continue
+                                    if self.visited[check_next_x][check_next_y] == "-1":
+                                        check_unvisited += 1
+                                
+                                if check_unvisited == 0:
+                                    if self.confirmPit(start[0]+xynew[0],start[1]+xynew[1]) == "0":
+                                        self.visited[start[0]+xynew[0]][start[1]+xynew[1]] = "-1"
+                                    self.visited[start[0]][start[1]] = "1"
+                                break
+                        elif direction == "up":
+                            go_max = [(0,-1),(0,1)]
+                            for move in go_max:
+                                next_x, next_y = start[0] + move[0], start[1] + move[1]
+                                if next_x < 0 or next_x >= self.size or next_y < 0 or next_y >= self.size:
+                                    continue
+                                xynew = move
+                                check_unvisited = 0
+                                for check_x,check_y in moves:
+                                    check_next_x, check_next_y = start[0] + check_x, start[1] +check_y
+                                    if check_next_x < 0 or check_next_x >= self.size or check_next_y < 0 or check_next_y >= self.size:
+                                        continue
+                                    if self.visited[check_next_x][check_next_y] == "-1":
+                                        check_unvisited += 1
+                                if check_unvisited == 0:
+                                    if self.confirmPit(start[0]+xynew[0],start[1]+xynew[1]) == "0":
+                                        self.visited[start[0]+xynew[0]][start[1]+xynew[1]] = "-1"
+                                    self.visited[start[0]][start[1]] = "1"
+                                break
+                        elif direction == "down":
+                            go_max = [(0,1),(0,-1)]
+                            for move in go_max:
+                                next_x, next_y = start[0] + move[0], start[1] + move[1]
+                                if next_x < 0 or next_x >= self.size or next_y < 0 or next_y >= self.size:
+                                    continue
+                                xynew = move
+                                check_unvisited = 0
+                                for check_x,check_y in moves:
+                                    check_next_x, check_next_y = start[0] + check_x, start[1] +check_y
+                                    if check_next_x < 0 or check_next_x >= self.size or check_next_y < 0 or check_next_y >= self.size:
+                                        continue
+                                    if self.visited[check_next_x][check_next_y] == "-1":
+                                        check_unvisited += 1
+                                if check_unvisited == 0:
+                                    if self.confirmPit(start[0]+xynew[0],start[1]+xynew[1]) == "0":
+                                        self.visited[start[0]+xynew[0]][start[1]+xynew[1]] = "-1"
+                                    self.visited[start[0]][start[1]] = "1"
+                                break
             if x_next < 0 or x_next >= self.size or y_next < 0 or y_next >= self.size:
                 continue
             if self.confirmPit(x_next,y_next) == "0" and self.confirmWumpus(x_next,y_next) == "0" and self.visited[x_next][y_next] == "-1":
                 path_can_go.append((x_next,y_next,0,(x_offset,y_offset),check_direction,copy.deepcopy(self.map_game)))
-            if self.confirmWumpus(x_next,y_next) == "1" and self.visited[x_next][y_next] == "-1":
+            if self.confirmWumpus(x_next,y_next) == "1" and self.visited[x_next][y_next] == "-1" and self.confirmPit(x_next,y_next) == "0":
+                kill_wumpus.append((x_next,y_next,1, (x_offset,y_offset),check_direction,copy.deepcopy(self.map_game)))
+            if self.confirmWumpus(x_next,y_next) == "-1" and self.visited[x_next][y_next] == "-1" and self.confirmPit(x_next,y_next) == "0":
                 kill_wumpus.append((x_next,y_next,1, (x_offset,y_offset),check_direction,copy.deepcopy(self.map_game)))
         if len(kill_wumpus) != 0:
                 path_can_go.extend(kill_wumpus)
@@ -732,9 +814,11 @@ class AgentController:
                 xynew = (-1,0)
                 direction_go = "up"
             if len(kill_wumpus) == 0 and check_style != 2:
-                path_can_go.append((old[0],old[1],2,(start[0]-old[0],start[1]-old[1]),direction_go,copy.deepcopy(self.map_game)))
+                if self.confirmPit(old[0],old[1]) == "0":
+                    path_can_go.append((old[0],old[1],2,(start[0]-old[0],start[1]-old[1]),direction_go,copy.deepcopy(self.map_game)))
             elif len(kill_wumpus) == 0 and check_style == 2:
-                path_can_go.append((old[0],old[1],2,(start[0]-old[0],start[1]-old[1]),direction_go,copy.deepcopy(self.map_game)))
+                if self.confirmPit(old[0],old[1]) == "0":
+                    path_can_go.append((old[0],old[1],2,(start[0]-old[0],start[1]-old[1]),direction_go,copy.deepcopy(self.map_game)))
                 if old[0]+xynew[0] < 0 or old[0]+xynew[0] >= self.size or old[1]+xynew[1] < 0 or old[1]+xynew[1] >= self.size:
                     if direction_go == "left":
                         go_max = [(1,0),(-1,0)]
@@ -752,7 +836,9 @@ class AgentController:
                                     check_unvisited += 1
                             
                             if check_unvisited == 0:
-                                self.visited[old[0]+xynew[0]][old[1]+xynew[1]] = "-1"
+                                if self.confirmPit(old[0]+xynew[0],old[1]+xynew[1]) == "0":
+                                    self.visited[old[0]+xynew[0]][old[1]+xynew[1]] = "-1"
+                                self.visited[old[0]][old[1]] = "1"
                             break
                     elif direction_go == "right":
                         go_max = [(1,0),(-1,0)]
@@ -769,7 +855,9 @@ class AgentController:
                                 if self.visited[check_next_x][check_next_y] == "-1":
                                     check_unvisited += 1
                             if check_unvisited == 0:
-                                self.visited[old[0]+xynew[0]][old[1]+xynew[1]] = "-1"
+                                if self.confirmPit(old[0]+xynew[0],old[1]+xynew[1]) == "0":
+                                    self.visited[old[0]+xynew[0]][old[1]+xynew[1]] = "-1"
+                                self.visited[old[0]][old[1]] = "1"
                             break
                     elif direction_go == "up":
                         go_max = [(0,1),(0,-1)]
@@ -790,7 +878,9 @@ class AgentController:
                                     check_unvisited += 1
                             
                             if check_unvisited == 0:
-                                self.visited[old[0]+xynew[0]][old[1]+xynew[1]] = "-1"
+                                if self.confirmPit(old[0]+xynew[0],old[1]+xynew[1]) == "0":
+                                    self.visited[old[0]+xynew[0]][old[1]+xynew[1]] = "-1"
+                                self.visited[old[0]][old[1]] = "1"
                             break
                     elif direction_go == "down":
                         go_max = [(0,1),(0,-1)]
@@ -811,10 +901,14 @@ class AgentController:
                                     check_unvisited += 1
                             
                             if check_unvisited == 0:
-                                self.visited[old[0]+xynew[0]][old[1]+xynew[1]] = "-1"
+                                if self.confirmPit(old[0]+xynew[0],old[1]+xynew[1]) == "0":
+                                    self.visited[old[0]+xynew[0]][old[1]+xynew[1]] = "-1"
+                                self.visited[old[0]][old[1]] = "1"
                             break
                 else:
-                    self.visited[old[0]+xynew[0]][old[1]+xynew[1]] = "-1"
+                    if self.confirmPit(old[0]+xynew[0],old[1]+xynew[1]) == "0":
+                        self.visited[old[0]+xynew[0]][old[1]+xynew[1]] = "-1"
+                    self.visited[old[0]][old[1]] = "1"
         if len(path_can_go) == 0 and old == (-1,-1):
             print("Agent will not move when every cave is dangerous")
             return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "StopUnsure"
