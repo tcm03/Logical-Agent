@@ -2,6 +2,7 @@ from enum import Enum
 
 import pygame.draw
 from enum import IntEnum
+
 # Color defined
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -25,23 +26,24 @@ def get_font(size):  # Returns Press-Start-2P in the desired size
     return pygame.font.Font("assets/font.ttf", size)
 
 
-
 class DIRECTION(IntEnum):
     RIGHT = 0
     LEFT = 1
     UP = 2
     DOWN = 3
 
+
 def get_image(sheet, frame, direction, width, height, scale):
     image = pygame.Surface((width, height)).convert_alpha()
-    image.blit(sheet, (0,0), (frame * width, direction * height, width, height))
+    image.blit(sheet, (0, 0), (frame * width, direction * height, width, height))
     image = pygame.transform.scale(image, (scale, scale))
     return image
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y, direction):
         # sprite
-        self.groups = game.all_sprites
+        self.groups = game.player_group
         pygame.sprite.Sprite.__init__(self, self.groups)
         player_down = pygame.image.load('assets/down.png').convert_alpha()
         player_down = pygame.transform.scale(player_down, (ROOM_SIZE, ROOM_SIZE))
@@ -86,7 +88,7 @@ class Player(pygame.sprite.Sprite):
 
 class Wumpus(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.wumpus_group
+        self.groups = game.wumpus_group
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.image = pygame.image.load('assets/wumpus.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (ROOM_SIZE, ROOM_SIZE))
@@ -97,7 +99,7 @@ class Wumpus(pygame.sprite.Sprite):
 
 class Pit(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.pit_group
+        self.groups = game.pit_group
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.image = pygame.image.load('assets/pit.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (ROOM_SIZE, ROOM_SIZE))
@@ -108,7 +110,7 @@ class Pit(pygame.sprite.Sprite):
 
 class Stench(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.stench_group
+        self.groups = game.stench_group
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.image = pygame.image.load('assets/stench.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (ROOM_SIZE, ROOM_SIZE))
@@ -119,7 +121,7 @@ class Stench(pygame.sprite.Sprite):
 
 class Breeze(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.breeze_group
+        self.groups = game.breeze_group
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.image = pygame.image.load('assets/breeze.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (ROOM_SIZE, ROOM_SIZE))
@@ -130,10 +132,21 @@ class Breeze(pygame.sprite.Sprite):
 
 class Treasure(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.treasure_group
+        self.groups = game.treasure_group
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.image = pygame.image.load('assets/treasure-chest.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (ROOM_SIZE, ROOM_SIZE))
         self.rect = self.image.get_rect()
         self.rect.x = x * ROOM_SIZE + game.offset_x
         self.rect.y = y * ROOM_SIZE + game.offset_y
+
+
+class ExitRoom(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.exit_group
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.image = pygame.image.load('assets/exit.png').convert_alpha()
+        self.image = pygame.transform.scale(self.image, (ROOM_SIZE/2, ROOM_SIZE/2))
+        self.rect = self.image.get_rect()
+        self.rect.centerx = x * ROOM_SIZE + game.offset_x
+        self.rect.centery = y * ROOM_SIZE + game.offset_y

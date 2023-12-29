@@ -49,7 +49,7 @@ class SimpleController:
         self.len = len(self.path)
         self.action = action_list
         
-    def get_action(self):
+    def get_information(self):
         information = {}
         if self.step < self.len:
             information["score"] = self.get_score()
@@ -62,7 +62,7 @@ class SimpleController:
 
             information["direction"] = self.get_direction()
             information["percept"] = self.get_percept()
-
+            information["action"] = self.get_action()
             self.step += 1
         return information
 
@@ -105,10 +105,10 @@ class SimpleController:
 
         return None
 
-    # def get_log(self):
-    #     if self.step < self.len:
-    #         return MOVE_LOG_DEMO[self.step]
-    #     return None
+    def get_action(self):
+        if self.step < self.len:
+            return self.action[self.step]
+        return None
 
     def get_percept(self):
         current_map = self.get_map()

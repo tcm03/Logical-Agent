@@ -1,3 +1,5 @@
+import time
+
 import pygame
 import sys
 
@@ -13,6 +15,7 @@ from simple_controller import *
 
 class Sound:
     def __init__(self):
+        pygame.mixer.init()
         self.arrow_hit_sound = pygame.mixer.Sound("assets/arrow_hit.mp3")
         self.arrow_miss_sound = pygame.mixer.Sound("assets/arrow_miss.mp3")
         self.grab_sound = pygame.mixer.Sound("assets/grab.mp3")
@@ -24,16 +27,20 @@ class Sound:
         if is_hit:
             self.play_scream()
 
+
     def play_arrow(self):
         # self.arrow_hit_sound.play()
         self.arrow_miss_sound.play()
+        pygame.time.wait(int(self.arrow_miss_sound.get_length() * 1000))
 
     def play_grab(self, is_grab):
         if is_grab:
             self.grab_sound.play()
+            pygame.time.wait(int(self.grab_sound.get_length() * 1000))
 
     def play_scream(self):
         self.scream_sound.play()
+        pygame.time.wait(int(self.scream_sound.get_length() * 1000))
 
 
 class Game:
@@ -45,14 +52,15 @@ class Game:
         self.clock = pygame.time.Clock()
         pygame.key.set_repeat(500, 100)
         self.sound_effect = Sound()
+
         # initialize sprites
-        self.all_sprites = pygame.sprite.Group()
         self.wumpus_group = pygame.sprite.Group()
         self.pit_group = pygame.sprite.Group()
         self.stench_group = pygame.sprite.Group()
         self.breeze_group = pygame.sprite.Group()
         self.treasure_group = pygame.sprite.Group()
-
+        self.exit_group = pygame.sprite.GroupSingle()
+        self.player_group = pygame.sprite.GroupSingle()
         # information
 
 
@@ -75,6 +83,7 @@ class Game:
 
         self.player = Player(self, x=self.player_position[0], y=self.player_position[1], direction=self.player_direction)
 
+        ExitRoom(self, x=0.5, y=self.size-0.5)
 
     def run(self):
         # game loop - set self.playing = False to end the game
@@ -95,7 +104,7 @@ class Game:
         self.kill_object()
         self.create_object()
         self.player.update()
-        # self.all_sprites.update()
+
 
     def draw_grid(self):
         width = self.size * ROOM_SIZE
@@ -113,11 +122,20 @@ class Game:
         pygame.draw.line(self.screen, WHITE, (self.offset_x, height + self.offset_y),
                          (width + self.offset_x, height + self.offset_y))
 
+    def draw_object(self):
+        self.stench_group.draw(self.screen)
+        self.breeze_group.draw(self.screen)
+        self.pit_group.draw(self.screen)
+        self.wumpus_group.draw(self.screen)
+        self.treasure_group.draw(self.screen)
+        self.exit_group.draw(self.screen)
+        self.player_group.draw(self.screen)
+
     def draw(self):
         self.screen.fill(BGCOLOR)
         self.draw_grid()
 
-        self.all_sprites.draw(self.screen)
+        self.draw_object()
 
         self.draw_notification_rect()
 
@@ -125,9 +143,10 @@ class Game:
         self.draw_percept()
 
         self.draw_text(f"Score:{self.score}", get_font(30), (0, 0, 0), WINDOW_SIZE[0] - 150, 20)
-        pygame.draw.line(self.screen, (255, 0, 0), (320, 80), (320, 100), 5)
-        pygame.draw.line(self.screen, (255, 0, 0), (60, 80), (130, 100), 5)
+        # pygame.draw.line(self.screen, (255, 0, 0), (320, 80), (320, 100), 5)
+        # pygame.draw.line(self.screen, (255, 0, 0), (60, 80), (130, 100), 5)
         pygame.display.flip()
+
 
     def draw_notification_rect(self):
         notification_surf = pygame.Surface((320, 720))
@@ -170,7 +189,7 @@ class Game:
                     Breeze(self, col, row)
                 if "G" in tile:
                     Treasure(self, col, row)
-        print(f"inside create_object, len all sprite = {len(self.all_sprites)}")
+
 
     def kill_object(self):
         for sprite in self.wumpus_group:
@@ -200,14 +219,14 @@ class Game:
                 self.quit()
 
     def consume(self):
-        info = self.controller.get_action()
+        info = self.controller.get_information()
         if len(info) > 0:
             player_position = info["position"][::-1]
             self.player.move_to(player_position[0], player_position[1])
             self.player.rotate(info["direction"])
 
             self.score = info["score"]
-            # self.action_log.append(info["log"])
+            self.action_log.append(info["action"])
             self.current_percept = info["percept"]
             self.sound_effect.play_shoot(info["shoot"][0], info["shoot"][1])
             self.sound_effect.play_grab(info["grab"])
@@ -245,7 +264,8 @@ class Game:
                         # file_dir = askopenfilename()
                         # root.destroy()
                         # print(file_dir)
-                        controller = SimpleController("test_input.txt")
+                        controller = SimpleController()
+                        controller.solver("test_input.txt")
                         # print(controller.get_percept())
                         self.load_data(controller=controller)
                         self.run()
