@@ -41,14 +41,17 @@ class SimpleController:
     def get_action(self):
         information = {}
         if self.step < self.len:
-            information["position"] = self.get_movement()
             information["score"] = self.get_score()
+            information["map"] = self.get_map()
+
+            information["position"] = self.get_movement()
+
             information["shoot"] = self.get_shoot()
             information["grab"] = self.get_grab()
-            information["map"] = self.get_map()
+
             information["direction"] = self.get_direction()
             information["percept"] = self.get_percept()
-            information["log"] = self.get_direction()
+
             self.step += 1
         return information
 
