@@ -17,6 +17,8 @@ def find_path(start,old,check_style,offset,direction,map_game,gameController):
         path_find, point_path,fire,list_direction,grab,map_list, check = find_path((step[0], step[1]),start,step[2],step[3],step[4],step[5],gameController)
         if check == "Stop":
             return path_find,point_path,fire,list_direction,grab,map_list, "Stop"
+        if check == "StopUnsure":
+            return path_find,point_path,fire,list_direction,grab,map_list, "StopUnsure"
 
 
 def getParameterUI(path_name):
@@ -24,6 +26,7 @@ def getParameterUI(path_name):
     if map_game is None:
         return None
     world_map , start = infer_information(map_game)
+    
     N = len(world_map) # kích thước mảng khi đọc vào
     start_position = start # vị trí bắt đầu của agent trong map
     old_position = (-1,-1) # vị trí trước khi đi đến ô bắt đầu (mặc định khi khởi tạo luôn là (-1,-1))
@@ -73,7 +76,8 @@ def getParameterUI(path_name):
                 for update_gold in range(i+1,temp_n):
                     x, y = path_list[i]
                     txt = map_list[update_gold][x][y]
-                    temp = txt[0:txt.index("G")]+txt[txt.index("G")+1:]
+                    if "G" in txt:
+                        temp = txt[0:txt.index("G")]+txt[txt.index("G")+1:]
                     map_list[update_gold][x][y]=temp
                     if map_list[update_gold][x][y] == "":
                         map_list[update_gold][x][y]='-'

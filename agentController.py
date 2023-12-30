@@ -20,11 +20,11 @@ class AgentController:
         self.path = []
         self.point = [0]
         self.shoot = []
-        self.try_stop = 0
+        self.try_stop = N
         self.direction_list=[]
         self.grab = []
         self.map_list = []
-        
+        self.end = None
         
         
         for _ in range(N):
@@ -169,6 +169,18 @@ class AgentController:
     def confirmWumpus(self,x,y):
         return self.W[x][y]
         
+    
+    def updateAfterGold(self):
+        x, y = self.currentCave
+        if "G" in self.map_game[x][y]:
+            txt = self.map_game[x][y]
+            temp = txt[0:txt.index("G")]+txt[txt.index("G")+1:]
+            self.map_game[x][y]=temp
+            if self.map_game[x][y] == "":
+                self.map_game[x][y]='-'
+    
+    
+    
     def confirmScream(self):
         if self.direction == "left":
             i = self.currentCave[1]-1
@@ -296,6 +308,8 @@ class AgentController:
     
     def updatePerceiveAgent(self,start,map_game,old,check_style,direction):
         self.currentCave = start
+        if start == (self.size-1,0):
+            self.end = start
         self.map_game = map_game
         if old == (-1,-1):
             self.P[start[0]][start[1]] = "0"
@@ -601,35 +615,39 @@ class AgentController:
                         xynew = (-1,0)
                     if start[0]+xynew[0] < 0 or start[0]+xynew[0] >= self.size or start[1]+xynew[1] < 0 or start[1]+xynew[1] >= self.size:
                         if self.try_stop == 0:
-                            temp_path,shoot_list,direction_list,map_list_return, exit_live = self.find_path_to_exit(start,(self.size-1,0))
-                            self.path.pop()
-                            self.path.extend(temp_path)
-                            self.map_list.extend(map_list_return)
-                            path_exit = len(temp_path)
-                            for i in range(1,path_exit):
-                                point_temp = self.point[-1]
-                                if shoot_list[i] == 1:
-                                    point_temp -= 100
-                                if "G" in self.map_game[temp_path[i][0]][temp_path[i][1]] and self.G[temp_path[i][0]][temp_path[i][1]]!="1":
-                                    point_temp += 1000
-                                    self.G[temp_path[i][0]][temp_path[i][1]] = "1"
-                                    self.grab.append(1)
-                                else:
-                                    self.grab.append(0)
-                                if "P" in self.map_game[temp_path[i][0]][temp_path[i][1]]:
-                                    point_temp -= 10000
-                                if "W" in self.map_game[temp_path[i][0]][temp_path[i][1]] and not exit_live:
-                                    point_temp -= 10000
-                                if shoot_list[i] == 1:
-                                    self.point.append(point_temp)
-                                else:
-                                    self.point.append(point_temp-10)
-                            if exit_live:
-                                self.point[-1] += 10
-                            shoot_list = shoot_list[1:]
-                            self.shoot.extend(shoot_list)
-                            self.direction_list.extend(direction_list)
-                            return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "Stop"
+                            if self.end is not None:
+                                temp_path,shoot_list,direction_list,map_list_return, exit_live = self.find_path_to_exit(start,(self.size-1,0))
+                                self.path.pop()
+                                self.path.extend(temp_path)
+                                self.map_list.extend(map_list_return)
+                                path_exit = len(temp_path)
+                                for i in range(1,path_exit):
+                                    point_temp = self.point[-1]
+                                    if shoot_list[i] == 1:
+                                        point_temp -= 100
+                                    if "G" in self.map_game[temp_path[i][0]][temp_path[i][1]] and self.G[temp_path[i][0]][temp_path[i][1]]!="1":
+                                        point_temp += 1000
+                                        self.G[temp_path[i][0]][temp_path[i][1]] = "1"
+                                        self.grab.append(1)
+                                    else:
+                                        self.grab.append(0)
+                                    if "P" in self.map_game[temp_path[i][0]][temp_path[i][1]]:
+                                        point_temp -= 10000
+                                    if "W" in self.map_game[temp_path[i][0]][temp_path[i][1]] and not exit_live:
+                                        point_temp -= 10000
+                                    if shoot_list[i] == 1:
+                                        self.point.append(point_temp)
+                                    else:
+                                        self.point.append(point_temp-10)
+                                if exit_live:
+                                    self.point[-1] += 10
+                                shoot_list = shoot_list[1:]
+                                self.shoot.extend(shoot_list)
+                                self.direction_list.extend(direction_list)
+                                return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "Stop"
+                            else:
+                                print("Agent will not move when every cave is dangerous")
+                                return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "StopUnsure"
                         self.try_stop -= 1
                         if direction == "left":
                             go_max = [(1,0),(-1,0)]
@@ -709,6 +727,7 @@ class AgentController:
                                     self.visited[start[0]][start[1]] = "1"
                                 break
                     if start[0]+xynew[0] >= 0 and start[0]+xynew[0] < self.size and start[1]+xynew[1] >= 0 and start[1]+xynew[1] < self.size:
+                        
                         check_unvisited = 0
                         if direction == "left":
                             go_max = [(1,0),(-1,0)]
@@ -725,6 +744,41 @@ class AgentController:
                                     if self.visited[check_next_x][check_next_y] == "-1" and (check_next_x, check_next_y)!=old:
                                         check_unvisited += 1
                                 if check_unvisited == 0:
+                                    if self.try_stop == 0:
+                                        if self.end is not None:
+                                            temp_path,shoot_list,direction_list,map_list_return, exit_live = self.find_path_to_exit(start,(self.size-1,0))
+                                            self.path.pop()
+                                            self.path.extend(temp_path)
+                                            self.map_list.extend(map_list_return)
+                                            path_exit = len(temp_path)
+                                            for i in range(1,path_exit):
+                                                point_temp = self.point[-1]
+                                                if shoot_list[i] == 1:
+                                                    point_temp -= 100
+                                                if "G" in self.map_game[temp_path[i][0]][temp_path[i][1]] and self.G[temp_path[i][0]][temp_path[i][1]]!="1":
+                                                    point_temp += 1000
+                                                    self.G[temp_path[i][0]][temp_path[i][1]] = "1"
+                                                    self.grab.append(1)
+                                                else:
+                                                    self.grab.append(0)
+                                                if "P" in self.map_game[temp_path[i][0]][temp_path[i][1]]:
+                                                    point_temp -= 10000
+                                                if "W" in self.map_game[temp_path[i][0]][temp_path[i][1]] and not exit_live:
+                                                    point_temp -= 10000
+                                                if shoot_list[i] == 1:
+                                                    self.point.append(point_temp)
+                                                else:
+                                                    self.point.append(point_temp-10)
+                                            if exit_live:
+                                                self.point[-1] += 10
+                                            shoot_list = shoot_list[1:]
+                                            self.shoot.extend(shoot_list)
+                                            self.direction_list.extend(direction_list)
+                                            return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "Stop"
+                                        else:
+                                            print("Agent will not move when every cave is dangerous")
+                                            return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "StopUnsure"
+                                    self.try_stop -= 1
                                     if self.confirmPit(start[0]+xynew[0],start[1]+xynew[1]) == "0":
                                         self.visited[start[0]+xynew[0]][start[1]+xynew[1]] = "-1"
                                     self.visited[start[0]][start[1]] = "1"
@@ -745,6 +799,41 @@ class AgentController:
                                         check_unvisited += 1
                                 
                                 if check_unvisited == 0:
+                                    if self.try_stop == 0:
+                                        if self.end is not None:
+                                            temp_path,shoot_list,direction_list,map_list_return, exit_live = self.find_path_to_exit(start,(self.size-1,0))
+                                            self.path.pop()
+                                            self.path.extend(temp_path)
+                                            self.map_list.extend(map_list_return)
+                                            path_exit = len(temp_path)
+                                            for i in range(1,path_exit):
+                                                point_temp = self.point[-1]
+                                                if shoot_list[i] == 1:
+                                                    point_temp -= 100
+                                                if "G" in self.map_game[temp_path[i][0]][temp_path[i][1]] and self.G[temp_path[i][0]][temp_path[i][1]]!="1":
+                                                    point_temp += 1000
+                                                    self.G[temp_path[i][0]][temp_path[i][1]] = "1"
+                                                    self.grab.append(1)
+                                                else:
+                                                    self.grab.append(0)
+                                                if "P" in self.map_game[temp_path[i][0]][temp_path[i][1]]:
+                                                    point_temp -= 10000
+                                                if "W" in self.map_game[temp_path[i][0]][temp_path[i][1]] and not exit_live:
+                                                    point_temp -= 10000
+                                                if shoot_list[i] == 1:
+                                                    self.point.append(point_temp)
+                                                else:
+                                                    self.point.append(point_temp-10)
+                                            if exit_live:
+                                                self.point[-1] += 10
+                                            shoot_list = shoot_list[1:]
+                                            self.shoot.extend(shoot_list)
+                                            self.direction_list.extend(direction_list)
+                                            return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "Stop"
+                                        else:
+                                            print("Agent will not move when every cave is dangerous")
+                                            return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "StopUnsure"
+                                    self.try_stop -= 1
                                     if self.confirmPit(start[0]+xynew[0],start[1]+xynew[1]) == "0":
                                         self.visited[start[0]+xynew[0]][start[1]+xynew[1]] = "-1"
                                     self.visited[start[0]][start[1]] = "1"
@@ -764,6 +853,41 @@ class AgentController:
                                     if self.visited[check_next_x][check_next_y] == "-1":
                                         check_unvisited += 1
                                 if check_unvisited == 0:
+                                    if self.try_stop == 0:
+                                        if self.end is not None:
+                                            temp_path,shoot_list,direction_list,map_list_return, exit_live = self.find_path_to_exit(start,(self.size-1,0))
+                                            self.path.pop()
+                                            self.path.extend(temp_path)
+                                            self.map_list.extend(map_list_return)
+                                            path_exit = len(temp_path)
+                                            for i in range(1,path_exit):
+                                                point_temp = self.point[-1]
+                                                if shoot_list[i] == 1:
+                                                    point_temp -= 100
+                                                if "G" in self.map_game[temp_path[i][0]][temp_path[i][1]] and self.G[temp_path[i][0]][temp_path[i][1]]!="1":
+                                                    point_temp += 1000
+                                                    self.G[temp_path[i][0]][temp_path[i][1]] = "1"
+                                                    self.grab.append(1)
+                                                else:
+                                                    self.grab.append(0)
+                                                if "P" in self.map_game[temp_path[i][0]][temp_path[i][1]]:
+                                                    point_temp -= 10000
+                                                if "W" in self.map_game[temp_path[i][0]][temp_path[i][1]] and not exit_live:
+                                                    point_temp -= 10000
+                                                if shoot_list[i] == 1:
+                                                    self.point.append(point_temp)
+                                                else:
+                                                    self.point.append(point_temp-10)
+                                            if exit_live:
+                                                self.point[-1] += 10
+                                            shoot_list = shoot_list[1:]
+                                            self.shoot.extend(shoot_list)
+                                            self.direction_list.extend(direction_list)
+                                            return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "Stop"
+                                        else:
+                                            print("Agent will not move when every cave is dangerous")
+                                            return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "StopUnsure"
+                                    self.try_stop -= 1
                                     if self.confirmPit(start[0]+xynew[0],start[1]+xynew[1]) == "0":
                                         self.visited[start[0]+xynew[0]][start[1]+xynew[1]] = "-1"
                                     self.visited[start[0]][start[1]] = "1"
@@ -783,6 +907,41 @@ class AgentController:
                                     if self.visited[check_next_x][check_next_y] == "-1":
                                         check_unvisited += 1
                                 if check_unvisited == 0:
+                                    if self.try_stop == 0:
+                                        if self.end is not None:
+                                            temp_path,shoot_list,direction_list,map_list_return, exit_live = self.find_path_to_exit(start,(self.size-1,0))
+                                            self.path.pop()
+                                            self.path.extend(temp_path)
+                                            self.map_list.extend(map_list_return)
+                                            path_exit = len(temp_path)
+                                            for i in range(1,path_exit):
+                                                point_temp = self.point[-1]
+                                                if shoot_list[i] == 1:
+                                                    point_temp -= 100
+                                                if "G" in self.map_game[temp_path[i][0]][temp_path[i][1]] and self.G[temp_path[i][0]][temp_path[i][1]]!="1":
+                                                    point_temp += 1000
+                                                    self.G[temp_path[i][0]][temp_path[i][1]] = "1"
+                                                    self.grab.append(1)
+                                                else:
+                                                    self.grab.append(0)
+                                                if "P" in self.map_game[temp_path[i][0]][temp_path[i][1]]:
+                                                    point_temp -= 10000
+                                                if "W" in self.map_game[temp_path[i][0]][temp_path[i][1]] and not exit_live:
+                                                    point_temp -= 10000
+                                                if shoot_list[i] == 1:
+                                                    self.point.append(point_temp)
+                                                else:
+                                                    self.point.append(point_temp-10)
+                                            if exit_live:
+                                                self.point[-1] += 10
+                                            shoot_list = shoot_list[1:]
+                                            self.shoot.extend(shoot_list)
+                                            self.direction_list.extend(direction_list)
+                                            return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "Stop"
+                                        else:
+                                            print("Agent will not move when every cave is dangerous")
+                                            return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "StopUnsure"
+                                    self.try_stop -= 1
                                     if self.confirmPit(start[0]+xynew[0],start[1]+xynew[1]) == "0":
                                         self.visited[start[0]+xynew[0]][start[1]+xynew[1]] = "-1"
                                     self.visited[start[0]][start[1]] = "1"

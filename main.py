@@ -3,12 +3,12 @@ from agentController import AgentController
 from solver import find_path, getParameterUI
 
 
-map_game = [
-                 ['S','S','S','SG'], # Rooms [1,1] to [4,1]
-                 ['WS','WS','WS','WS'], # Rooms [1,2] to [4,2] 
-                 ['S','S','S','S'], # Rooms [1,3] to [4,3]
-                 ['-','-','-','-'], # Rooms [1,4] to [4,4]
-]
+# map_game = [
+#                  ['S','S','S','SG'], # Rooms [1,1] to [4,1]
+#                  ['WS','WS','WS','WS'], # Rooms [1,2] to [4,2] 
+#                  ['S','S','S','S'], # Rooms [1,3] to [4,3]
+#                  ['-','-','-','-'], # Rooms [1,4] to [4,4]
+# ]
 
 
 # map_game = [
@@ -26,12 +26,12 @@ map_game = [
 #                 ]
 
 
-# map_game = [
-#                  ['-','B','P','B'], # Rooms [1,1] to [4,1]
-#                  ['S','-','B','-'], # Rooms [1,2] to [4,2] 
-#                  ['W','S','B','-'], # Rooms [1,3] to [4,3]
-#                  ['S','B','P','BG'], # Rooms [1,4] to [4,4]
-#                 ]
+map_game = [
+                 ['-','B','P','B'], # Rooms [1,1] to [4,1]
+                 ['S','-','B','-'], # Rooms [1,2] to [4,2] 
+                 ['W','S','B','-'], # Rooms [1,3] to [4,3]
+                 ['S','B','P','BG'], # Rooms [1,4] to [4,4]
+                ]
 
 """
 # Map hợp lệ khi đã cập nhật breeze và squeeze(Lưu ý map_game ở dưới là hợp lệ, trong khi map_game1
