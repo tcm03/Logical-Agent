@@ -31,16 +31,16 @@ class Sound:
     def play_arrow(self):
         # self.arrow_hit_sound.play()
         self.arrow_miss_sound.play()
-        pygame.time.wait(int(self.arrow_miss_sound.get_length() * 1000))
+        # pygame.time.wait(int(self.arrow_miss_sound.get_length() * 1000))
 
     def play_grab(self, is_grab):
         if is_grab:
             self.grab_sound.play()
-            pygame.time.wait(int(self.grab_sound.get_length() * 1000))
+            # pygame.time.wait(int(self.grab_sound.get_length() * 1000))
 
     def play_scream(self):
         self.scream_sound.play()
-        pygame.time.wait(int(self.scream_sound.get_length() * 1000))
+        # pygame.time.wait(int(self.scream_sound.get_length() * 1000))
 
 
 class Game:
@@ -104,6 +104,8 @@ class Game:
         self.kill_object()
         self.create_object()
         self.player.update()
+        self.sound_effect.play_shoot(self.current_shoot[0], self.current_shoot[1])
+        self.sound_effect.play_grab(self.current_grab)
 
 
     def draw_grid(self):
@@ -140,10 +142,8 @@ class Game:
 
         self.draw_log()
         self.draw_percept()
-        # self.sound_effect.play_shoot(self.current_shoot[0], self.current_shoot[1])
-        # self.sound_effect.play_grab(self.current_grab)
-
         self.draw_object()
+
         self.draw_text(f"Score:{self.score}", get_font(30), (0, 0, 0), WINDOW_SIZE[0] - 150, 20)
         # pygame.draw.line(self.screen, (255, 0, 0), (320, 80), (320, 100), 5)
         # pygame.draw.line(self.screen, (255, 0, 0), (60, 80), (130, 100), 5)

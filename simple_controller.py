@@ -65,6 +65,8 @@ class SimpleController:
             information["direction"] = self.get_direction()
             information["percept"] = self.get_percept()
             information["action"] = self.get_action()
+            if information["shoot"][1]:
+                information["percept"].append("Scream")
             self.step += 1
         return information
 
