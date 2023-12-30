@@ -46,19 +46,22 @@ def getParameterUI(path_name):
     
     action_list = []
     
+    
+    
+    
     for i in range(temp_n):
         
-        if i == 0:
-            action_list.append("Start")
-        else:
-            action_list.append("Forward")
-        temp_past_list.append(path_list[i])
-        temp_point_list.append(point_list[i])
-        temp_shoot_list.append((0,0))
-        temp_grab_list.append(0)
-        temp_map_list.append(map_list[i])
-        temp_direction_list.append(direction_list[i])
-        
+        if shoot_list[i][0] != 1:
+            if i == 0:
+                action_list.append("Start")
+            else:
+                action_list.append("Forward")
+            temp_past_list.append(path_list[i])
+            temp_point_list.append(point_list[i])
+            temp_shoot_list.append((0,0))
+            temp_grab_list.append(0)
+            temp_map_list.append(map_list[i])
+            temp_direction_list.append(direction_list[i])
         
         if grab_list[i] == 1:
             action_list.append("Grab")
@@ -69,16 +72,6 @@ def getParameterUI(path_name):
             temp_map_list.append(map_list[i])
             temp_direction_list.append(direction_list[i])
         
-        if i < temp_n -1:
-            if direction_list[i] != direction_list[i+1]:
-                action_list.append(f"Turn {direction_list[i+1]}")
-                temp_past_list.append(path_list[i])
-                temp_point_list.append(point_list[i])
-                temp_shoot_list.append((0,0))
-                temp_grab_list.append(0)
-                temp_map_list.append(map_list[i])
-                temp_direction_list.append(direction_list[i+1])
-            
         if shoot_list[i][0] == 1:
             action_list.append("Shoot")
             temp_past_list.append(path_list[i])
@@ -87,6 +80,68 @@ def getParameterUI(path_name):
             temp_grab_list.append(0)
             temp_map_list.append(map_list[i])
             temp_direction_list.append(direction_list[i])
+        
+        
+        if i < temp_n -1:
+            if direction_list[i] != direction_list[i+1]:
+                if direction_list[i] == "left" and direction_list[i+1] == "right":
+                    action_list.append(f"Turn {direction_list[i+1]}")
+                    temp_past_list.append(path_list[i])
+                    temp_point_list.append(point_list[i])
+                    temp_shoot_list.append((0,0))
+                    temp_grab_list.append(0)
+                    temp_map_list.append(map_list[i])
+                    temp_direction_list.append("up")
+                    
+                if direction_list[i] == "right" and direction_list[i+1] == "left":
+                    action_list.append(f"Turn {direction_list[i+1]}")
+                    temp_past_list.append(path_list[i])
+                    temp_point_list.append(point_list[i])
+                    temp_shoot_list.append((0,0))
+                    temp_grab_list.append(0)
+                    temp_map_list.append(map_list[i])
+                    temp_direction_list.append("up")
+                    
+                if direction_list[i] == "up" and direction_list[i+1] == "down":
+                    action_list.append(f"Turn left")
+                    temp_past_list.append(path_list[i])
+                    temp_point_list.append(point_list[i])
+                    temp_shoot_list.append((0,0))
+                    temp_grab_list.append(0)
+                    temp_map_list.append(map_list[i])
+                    temp_direction_list.append("left")
+                    
+                if direction_list[i] == "down" and direction_list[i+1] == "up":
+                    action_list.append(f"Turn left")
+                    temp_past_list.append(path_list[i])
+                    temp_point_list.append(point_list[i])
+                    temp_shoot_list.append((0,0))
+                    temp_grab_list.append(0)
+                    temp_map_list.append(map_list[i])
+                    temp_direction_list.append("right")
+                
+                if direction_list[i] == "left" and direction_list[i+1] == "up":
+                    action_list.append(f"Turn right")
+                elif direction_list[i] == "right" and direction_list[i+1] == "up":
+                    action_list.append(f"Turn left")
+                elif direction_list[i] == "left" and direction_list[i+1] == "down":
+                    action_list.append(f"Turn left")
+                elif direction_list[i] == "right" and direction_list[i+1] == "down":
+                    action_list.append(f"Turn right")
+                elif direction_list[i] == "up" and direction_list[i+1] == "right":
+                    action_list.append(f"Turn right")
+                elif direction_list[i] == "down" and direction_list[i+1] == "left":
+                    action_list.append(f"Turn right")
+                elif direction_list[i+1] == "up" or direction_list[i+1] == "down":
+                    action_list.append(f"Turn left")
+                else:
+                    action_list.append(f"Turn {direction_list[i+1]}")
+                temp_past_list.append(path_list[i])
+                temp_point_list.append(point_list[i])
+                temp_shoot_list.append((0,0))
+                temp_grab_list.append(0)
+                temp_map_list.append(map_list[i])
+                temp_direction_list.append(direction_list[i+1])
             
         if i == temp_n-1:
             action_list.append("Climb")

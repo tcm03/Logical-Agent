@@ -290,8 +290,6 @@ class AgentController:
     def updatePerceiveAgent(self,start,map_game,old,check_style,direction):
         self.currentCave = start
         self.map_game = map_game
-        print("_______----_____")
-        print(start)
         if old == (-1,-1):
             self.P[start[0]][start[1]] = "0"
             self.W[start[0]][start[1]] = "0"
