@@ -26,6 +26,7 @@ class AgentController:
         self.map_list = []
         
         
+        
         for _ in range(N):
             temp = []
             for _ in range(N):
@@ -50,6 +51,9 @@ class AgentController:
                 temp.append("-1")
             self.visited.append(temp)
     
+        
+    
+    
     def perceive(self):
         moves = [(0, 1), (0, -1), (-1, 0),(1, 0)]
         
@@ -61,6 +65,7 @@ class AgentController:
 
                 if next_x < 0 or next_x >= self.size or next_y < 0 or next_y >= self.size:
                     continue
+                
                 self.updatePit(next_x,next_y,"0")
                 for i in range(len(self.knowledgePit)):
                     if self.knowledgePit[i] == "":
@@ -86,6 +91,8 @@ class AgentController:
                         temp1 = temp[0].split(",")
                         self.updateWumPus(int(temp1[0]),int(temp1[1]),"1")
                         self.knowledgeWum[i] = ""
+        
+        
         
         if "B" in self.map_game[x][y]:
             createLogicPit = []
@@ -332,11 +339,6 @@ class AgentController:
             self.map_list.append(copy.deepcopy(self.map_game))
         self.shoot.append((0,0))
         self.direction_list.append(direction)
-        # if check_style == 1:
-        #     self.shoot.append(1)
-        #     self.shoot.append(0)
-        # else:
-        #     self.shoot.append(0)
         if old != (-1,-1):
             if "P" in self.map_game[start[0]][start[1]]:
                 temp_point -= 10000
@@ -347,7 +349,6 @@ class AgentController:
                 temp_point -= 10000
             temp_point -= 10
             self.point.append(temp_point)
-    
     def checkAgentDie(self,start,check_style):
         return "P" in self.map_game[start[0]][start[1]] or ("W" in self.map_game[start[0]][start[1]] and self.W[start[0]][start[1]]=="1" and check_style != 1)
     
@@ -611,7 +612,7 @@ class AgentController:
                                     point_temp -= 100
                                 if "G" in self.map_game[temp_path[i][0]][temp_path[i][1]] and self.G[temp_path[i][0]][temp_path[i][1]]!="1":
                                     point_temp += 1000
-                                    self.G[temp_path[i][0]][temp_path[i][0]] = "1"
+                                    self.G[temp_path[i][0]][temp_path[i][1]] = "1"
                                     self.grab.append(1)
                                 else:
                                     self.grab.append(0)

@@ -47,8 +47,6 @@ def getParameterUI(path_name):
     action_list = []
     
     
-    
-    
     for i in range(temp_n):
         
         if shoot_list[i][0] != 1:
@@ -71,6 +69,14 @@ def getParameterUI(path_name):
             temp_grab_list.append(grab_list[i])
             temp_map_list.append(map_list[i])
             temp_direction_list.append(direction_list[i])
+            if i+1 < temp_n:
+                for update_gold in range(i+1,temp_n):
+                    x, y = path_list[i]
+                    txt = map_list[update_gold][x][y]
+                    temp = txt[0:txt.index("G")]+txt[txt.index("G")+1:]
+                    map_list[update_gold][x][y]=temp
+                    if map_list[update_gold][x][y] == "":
+                        map_list[update_gold][x][y]='-'
         
         if shoot_list[i][0] == 1:
             action_list.append("Shoot")
