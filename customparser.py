@@ -22,12 +22,15 @@ def infer_information(world_map):
             if 'P' in world_map[row][col]:
                 update_adjacent(world_map, row, col, 'B')
             if 'A' in world_map[row][col]:
+                print("here1")
                 if len(world_map[row][col]) == 1:
+                    print("here2")
                     world_map[row][col] = '-'
-                    i = row
-                    j = col
                 else:
-                    world_map[row][col].replace("A", "")
+                    print("here3")
+                    world_map[row][col] = world_map[row][col].replace("A", "")
+                i = row
+                j = col
     return world_map, (i, j)
 
 def update_adjacent(world_map, row, col, perception):
@@ -59,5 +62,3 @@ def generate_map(size):
                 room = "G"
             map[i][j] = room
     return map
-
-
