@@ -22,12 +22,15 @@ def infer_information(world_map):
             if 'P' in world_map[row][col]:
                 update_adjacent(world_map, row, col, 'B')
             if 'A' in world_map[row][col]:
+                print("here1")
                 if len(world_map[row][col]) == 1:
+                    print("here2")
                     world_map[row][col] = '-'
-                    i = row
-                    j = col
                 else:
-                    world_map[row][col].replace("A", "")
+                    print("here3")
+                    world_map[row][col] = world_map[row][col].replace("A", "")
+                i = row
+                j = col
     return world_map, (i, j)
 
 def update_adjacent(world_map, row, col, perception):
@@ -46,8 +49,29 @@ def update_adjacent(world_map, row, col, perception):
 
 def generate_map(size):
     map = [["-" for i in range(size)] for i in range(size)]
+    # generate at least
+    player_x = random.randint(0, size - 1)
+    player_y = random.randint(0, size - 1)
+    map[player_y][player_x] = "P"
+
+    x = random.randint(0, size - 1)
+    y = random.randint(0, size - 1)
+    while map[y][x] != "-":
+        x = random.randint(0, size - 1)
+        y = random.randint(0, size - 1)
+    # print(f"y={y}, x={x}")
+    map[y][x] = "G"
+
+    while map[y][x] != "-":
+        x = random.randint(0, size - 1)
+        y = random.randint(0, size - 1)
+    # print(f"y={y}, x={x}")
+    map[y][x] = "W"
+
     for i in range(size):
         for j in range(size):
+            if map[i][j] != "-":
+                continue
             rand_num = random.random()  # Generate a random number between 0 and 1
             if rand_num < 0.6:  # 60% chance
                 continue
@@ -58,6 +82,5 @@ def generate_map(size):
             else:  # 10% chance
                 room = "G"
             map[i][j] = room
+
     return map
-
-
