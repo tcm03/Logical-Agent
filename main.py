@@ -103,9 +103,10 @@ class Game:
         # update portion of the game
         self.kill_object()
         self.create_object()
-        self.player.update()
+
         self.sound_effect.play_shoot(self.current_shoot[0], self.current_shoot[1])
         self.sound_effect.play_grab(self.current_grab)
+        self.player.update(self.current_shoot[0], self.current_grab)
 
 
     def draw_grid(self):

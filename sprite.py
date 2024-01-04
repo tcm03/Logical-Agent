@@ -33,16 +33,17 @@ class DIRECTION(IntEnum):
     DOWN = 3
 
 
-def get_image(sheet, frame, direction, width, height, scale):
+def get_image(sheet, frame, width, height, scale):
     image = pygame.Surface((width, height)).convert_alpha()
-    image.blit(sheet, (0, 0), (frame * width, direction * height, width, height))
     image = pygame.transform.scale(image, (scale, scale))
+    image.blit(sheet, (0, 0), (frame * width, 0, width, height))
     return image
 
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y, direction):
         # sprite
+        self.game = game
         self.groups = game.player_group
         pygame.sprite.Sprite.__init__(self, self.groups)
         player_down = pygame.image.load('assets/down.png').convert_alpha()
@@ -53,6 +54,21 @@ class Player(pygame.sprite.Sprite):
         player_left = pygame.transform.scale(player_left, (ROOM_SIZE, ROOM_SIZE))
         player_right = pygame.image.load('assets/right.png').convert_alpha()
         player_right = pygame.transform.scale(player_right, (ROOM_SIZE, ROOM_SIZE))
+
+        player_shoot_left = pygame.image.load('assets/shoot_left.png').convert_alpha()
+        player_shoot_left = pygame.transform.scale(player_shoot_left, (ROOM_SIZE, ROOM_SIZE))
+        player_shoot_right = pygame.image.load('assets/shoot_right.png').convert_alpha()
+        player_shoot_right = pygame.transform.scale(player_shoot_right, (ROOM_SIZE, ROOM_SIZE))
+        player_shoot_up = pygame.image.load('assets/shoot_up.png').convert_alpha()
+        player_shoot_up = pygame.transform.scale(player_shoot_up, (ROOM_SIZE, ROOM_SIZE))
+        player_shoot_down = pygame.image.load('assets/shoot_down.png').convert_alpha()
+        player_shoot_down = pygame.transform.scale(player_shoot_down, (ROOM_SIZE, ROOM_SIZE))
+
+        player_grab = pygame.image.load('assets/grab.png').convert_alpha()
+        self.player_grab = pygame.transform.scale(player_grab, (ROOM_SIZE, ROOM_SIZE))
+
+        self.player_shoot = [player_shoot_right, player_shoot_left, player_shoot_up, player_shoot_down]
+
         self.player_move = [player_right, player_left, player_up, player_down]
         self.image = self.player_move[direction]
         self.rect = self.image.get_rect()
@@ -73,18 +89,36 @@ class Player(pygame.sprite.Sprite):
     def rotate(self, direction):
         self.direction = direction
 
-    def update(self):
+
+
+    def update(self, is_shoot, is_grab):
         self.rect.x = self.x * ROOM_SIZE + self.offset_x
         self.rect.y = self.y * ROOM_SIZE + self.offset_y
-        if self.direction == DIRECTION.DOWN:
-            self.image = self.player_move[3]
-        elif self.direction == DIRECTION.UP:
-            self.image = self.player_move[2]
-        elif self.direction == DIRECTION.LEFT:
-            self.image = self.player_move[1]
-        else:
-            self.image = self.player_move[0]
 
+        if is_grab:
+            self.image = self.player_grab
+        else:
+            if self.direction == DIRECTION.DOWN:
+                if is_shoot:
+                    self.image = self.player_shoot[3]
+                else:
+                    self.image = self.player_move[3]
+
+            elif self.direction == DIRECTION.UP:
+                if is_shoot:
+                    self.image = self.player_shoot[2]
+                else:
+                    self.image = self.player_move[2]
+            elif self.direction == DIRECTION.LEFT:
+                if is_shoot:
+                    self.image = self.player_shoot[1]
+                else:
+                    self.image = self.player_move[1]
+            else:
+                if is_shoot:
+                    self.image = self.player_shoot[0]
+                else:
+                    self.image = self.player_move[0]
 
 class Wumpus(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
