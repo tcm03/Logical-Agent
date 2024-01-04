@@ -81,6 +81,7 @@ def getParameterUI(path_name,i):
         if grab_list[i] == 1:
             action_list.append("Grab")
             temp_past_list.append(path_list[i])
+            temp_point_list[-1] -= 1000
             temp_point_list.append(point_list[i])
             temp_shoot_list.append((0,0))
             temp_grab_list.append(grab_list[i])
