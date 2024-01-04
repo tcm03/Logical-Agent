@@ -650,7 +650,7 @@ class AgentController:
                                 return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "StopUnsure"
                         self.try_stop -= 1
                         if direction == "left":
-                            go_max = [(1,0),(-1,0)]
+                            go_max = [(1,0),(-1,0),(0,1),(0,-1)]
                             for move in go_max:
                                 next_x, next_y = start[0] + move[0], start[1] + move[1]
                                 if next_x < 0 or next_x >= self.size or next_y < 0 or next_y >= self.size:
@@ -669,7 +669,7 @@ class AgentController:
                                     self.visited[start[0]][start[1]] = "1"
                                 break
                         elif direction == "right":
-                            go_max = [(1,0),(-1,0)]
+                            go_max = [(1,0),(-1,0),(0,1),(0,-1)]
                             for move in go_max:
                                 next_x, next_y = start[0] + move[0], start[1] + move[1]
                                 if next_x < 0 or next_x >= self.size or next_y < 0 or next_y >= self.size:
@@ -689,7 +689,7 @@ class AgentController:
                                     self.visited[start[0]][start[1]] = "1"
                                 break
                         elif direction == "up":
-                            go_max = [(0,1),(0,-1)]
+                            go_max = [(0,1),(0,-1),(1,0),(-1,0)]
                             for move in go_max:
                                 next_x, next_y = start[0] + move[0], start[1] + move[1]
                                 if next_x < 0 or next_x >= self.size or next_y < 0 or next_y >= self.size:
@@ -708,7 +708,7 @@ class AgentController:
                                     self.visited[start[0]][start[1]] = "1"
                                 break
                         elif direction == "down":
-                            go_max = [(0,1),(0,-1)]
+                            go_max = [(0,1),(0,-1),(1,0),(-1,0)]
                             for move in go_max:
                                 next_x, next_y = start[0] + move[0], start[1] + move[1]
                                 if next_x < 0 or next_x >= self.size or next_y < 0 or next_y >= self.size:
@@ -979,7 +979,7 @@ class AgentController:
                     path_can_go.append((old[0],old[1],2,(start[0]-old[0],start[1]-old[1]),direction_go,copy.deepcopy(self.map_game)))
                 if old[0]+xynew[0] < 0 or old[0]+xynew[0] >= self.size or old[1]+xynew[1] < 0 or old[1]+xynew[1] >= self.size:
                     if direction_go == "left":
-                        go_max = [(1,0),(-1,0)]
+                        go_max = [(1,0),(-1,0),(0,1),(0,-1)]
                         for move in go_max:
                             next_x, next_y = old[0] + move[0], old[1] + move[1]
                             if next_x < 0 or next_x >= self.size or next_y < 0 or next_y >= self.size:
@@ -999,7 +999,7 @@ class AgentController:
                                 self.visited[old[0]][old[1]] = "1"
                             break
                     elif direction_go == "right":
-                        go_max = [(1,0),(-1,0)]
+                        go_max = [(1,0),(-1,0),(0,1),(0,-1)]
                         for move in go_max:
                             next_x, next_y = old[0] + move[0], old[1] + move[1]
                             if next_x < 0 or next_x >= self.size or next_y < 0 or next_y >= self.size:
@@ -1018,7 +1018,7 @@ class AgentController:
                                 self.visited[old[0]][old[1]] = "1"
                             break
                     elif direction_go == "up":
-                        go_max = [(0,1),(0,-1)]
+                        go_max = [(0,1),(0,-1),(1,0),(-1,0)]
                         for move in go_max:
                             next_x, next_y = old[0] + move[0], old[1] + move[1]
                             if next_x < 0 or next_x >= self.size or next_y < 0 or next_y >= self.size:
@@ -1041,7 +1041,7 @@ class AgentController:
                                 self.visited[old[0]][old[1]] = "1"
                             break
                     elif direction_go == "down":
-                        go_max = [(0,1),(0,-1)]
+                        go_max = [(0,1),(0,-1),(1,0),(-1,0)]
                         for move in go_max:
                             next_x, next_y = old[0] + move[0], old[1] + move[1]
                             if next_x < 0 or next_x >= self.size or next_y < 0 or next_y >= self.size:
