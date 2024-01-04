@@ -158,7 +158,10 @@ def getParameterUI(path_name,i):
                 temp_direction_list.append(direction_list[i+1])
             
         if i == temp_n-1:
-            action_list.append("Climb")
+            if path_list[i] == (N-1,0):
+                action_list.append("Climb")
+            else:
+                action_list.append("Unsure Stop")
             temp_past_list.append(path_list[i])
             temp_point_list.append(point_list[i])
             temp_shoot_list.append((0,0))
