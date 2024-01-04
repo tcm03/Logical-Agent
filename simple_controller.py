@@ -40,7 +40,7 @@ class SimpleController:
         self.action = None
         
     def solver(self,filepath_map):
-        path_list, point_list, shoot_list, direction_list, grab_list, map_list, action_list = solver.getParameterUI(filepath_map)
+        path_list, point_list, shoot_list, direction_list, grab_list, map_list, action_list = solver.getParameter2(filepath_map)
         self.path = path_list
         self.score = point_list
         self.shoot = shoot_list

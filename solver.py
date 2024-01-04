@@ -21,21 +21,21 @@ def find_path(start,old,check_style,offset,direction,map_game,gameController):
             return path_find,point_path,fire,list_direction,grab,map_list, "StopUnsure"
 
 
-def getParameterUI(path_name):
+def getParameterUI(path_name,i):
     map_game = read_map(path_name)
     if map_game is None:
         return None
     world_map , start = infer_information(map_game)
     
-    N = len(world_map) # kích thước mảng khi đọc vào
-    start_position = start # vị trí bắt đầu của agent trong map
-    old_position = (-1,-1) # vị trí trước khi đi đến ô bắt đầu (mặc định khi khởi tạo luôn là (-1,-1))
-    check_style = 0 # có 0,1,2( 0: ô bình thường an toàn không xét, 1 ô xét bắn cung, 2: ô nghi ngờ không chắc chắn)  )
-    offset = None # moves vừa mới đi (0,1) (0,-1) (1,0) (-1,0) để xét trường hợp quay lui khi không có ô nào để đi
-    direction = "right" # hướng đi mặc định ban đầu luôn luôn là right. Ngoài ra còn có left, up, down
-    map_game_copy = copy.deepcopy(world_map) # mảng ban đầu truyền vào sau khi đọc (mục đích để lưu phục vụ vẽ UI)
-
-    gameController = AgentController(N,world_map)
+    N = len(world_map) 
+    start_position = start 
+    old_position = (-1,-1) 
+    check_style = 0 
+    offset = None 
+    direction = "right" 
+    map_game_copy = copy.deepcopy(world_map) 
+    
+    gameController = AgentController(N,world_map,i)
     
     path_list, point_list,shoot_list,direction_list,grab_list,map_list, _ = find_path(start_position,old_position,check_style, offset,direction,map_game_copy,gameController)
     
@@ -164,3 +164,21 @@ def getParameterUI(path_name):
             
     
     return temp_past_list, temp_point_list,temp_shoot_list,temp_direction_list,temp_grab_list,temp_map_list,action_list
+
+
+def getParameter2(path_name):
+    
+    map_game = read_map(path_name)
+    if map_game is None:
+        return None
+    N = len(map_game)
+    best_past_list, best_point_list,best_shoot_list,best_direction_list,best_grab_list,best_map_list,best_action_list = getParameterUI(path_name,0)
+    for i in range(1,N*N+1):
+        try:  
+            temp_past_list, temp_point_list,temp_shoot_list,temp_direction_list,temp_grab_list,temp_map_list,action_list = getParameterUI(path_name,i)
+        except:
+            continue
+        if best_point_list[-1] < temp_point_list[-1]:
+            best_past_list, best_point_list,best_shoot_list,best_direction_list,best_grab_list,best_map_list,best_action_list = temp_past_list, temp_point_list,temp_shoot_list,temp_direction_list,temp_grab_list,temp_map_list,action_list
+            
+    return best_past_list, best_point_list,best_shoot_list,best_direction_list,best_grab_list,best_map_list,best_action_list

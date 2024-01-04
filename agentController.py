@@ -6,7 +6,7 @@ import numpy as np
 
 
 class AgentController:
-    def __init__(self,N,map_game):
+    def __init__(self,N,map_game,try_stop):
         self.map_game = map_game
         self.currentCave = None
         self.direction = "right"
@@ -20,7 +20,7 @@ class AgentController:
         self.path = []
         self.point = [0]
         self.shoot = []
-        self.try_stop = N
+        self.try_stop = try_stop
         self.direction_list=[]
         self.grab = []
         self.map_list = []
