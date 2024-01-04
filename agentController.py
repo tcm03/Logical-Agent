@@ -370,6 +370,11 @@ class AgentController:
         return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list,"Stop"
     
     def find_path_to_exit(self, start, end):
+        print("Start Exit")
+        path_save = None
+        shoot_list_save = None
+        direction_list_save = None 
+        map_list_save = None
         trace = []
         visited = []
         for _ in range(self.size):
@@ -399,8 +404,9 @@ class AgentController:
         self.updatePit(start[0],start[1],"0")
         self.updateWumPus(start[0],start[1],"0")
         moves = [(0, 1), (0, -1), (-1, 0),(1, 0)]
-        while True:
+        while frontier.qsize() != 0:
             cost, position ,old_position, direction,is_shoot,old_map2,old_knowPit2,old_knowWum2,old_p2,old_w2,old_g2 = frontier.get()
+            print(position)
             self.currentCave = position
             self.map_game=old_map2
             self.knowledgePit=old_knowPit2
@@ -422,6 +428,58 @@ class AgentController:
                 continue
             visited[x][y] = True
             trace[x][y] = (old_position,is_shoot,direction,old_map2,kiemtra)
+            if frontier.qsize() == 0:
+                self.currentCave = start
+                self.map_game=old_map
+                self.knowledgePit=old_knowPit
+                self.knowledgeWum=old_knowWum
+                self.P=old_p
+                self.W=old_w
+                self.G=old_g
+                self.direction= old_direction
+                path = []
+                shoot_list = [(0,0)]
+                direction_list = []
+                check_sort = is_shoot
+                map_list = []
+                temp_check_map = old_map
+                while position != start:
+                    if check_sort == 1:
+                        path.append(position)
+                        # path.append(position)
+                        if kiemtra:
+                            shoot_list.append((1,1))
+                        else:
+                            shoot_list.append((1,0))
+                        map_list.append(temp_check_map)
+                        shoot_list.append((0,0))
+                        # map_list.append(trace[position[0]][position[1]][3])
+                        map_list.append(temp_check_map)
+                        temp_check_map = trace[position[0]][position[1]][3]
+                        direction_list.append(trace[position[0]][position[1]][2])
+                        direction_list.append(trace[position[0]][position[1]][2])
+                        position = trace[position[0]][position[1]][0]
+                        path.append(position)
+                        check_sort = trace[position[0]][position[1]][1]
+                        kiemtra = trace[position[0]][position[1]][4]
+                    else:
+                        path.append(position)
+                        shoot_list.append((0,0))
+                        direction_list.append(trace[position[0]][position[1]][2])
+                        map_list.append(trace[position[0]][position[1]][3])
+                        temp_check_map = trace[position[0]][position[1]][3]
+                        position = trace[position[0]][position[1]][0]
+                        check_sort = trace[position[0]][position[1]][1]
+                        kiemtra = trace[position[0]][position[1]][4]
+                path.append(start)  
+                path.reverse()  
+                shoot_list.reverse()
+                direction_list.reverse()
+                map_list.reverse()
+                path_save = copy.deepcopy(path)
+                shoot_list_save = copy.deepcopy(shoot_list)
+                direction_list_save = copy.deepcopy(direction_list)
+                map_list_save = copy.deepcopy(map_list)
             if self.map_game[x][y] == "P" or ("W" in self.map_game[x][y] and is_shoot == 0):
                 self.currentCave = start
                 self.map_game=old_map
@@ -586,6 +644,8 @@ class AgentController:
                 old_g3 = copy.deepcopy(self.G)
                 if self.confirmPit(next_x1,next_y1) == "0":
                     frontier.put([cost+1,(next_x1,next_y1),(x,y),check_direction_ran,0,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3]) 
+            
+        return path_save,shoot_list_save,direction_list_save,map_list_save, False
 
     def getPathCanGo(self,start,check_style,offset,direction,old):
         moves = [(0, 1), (0, -1), (-1, 0),(1, 0)]
@@ -617,6 +677,8 @@ class AgentController:
                         if self.try_stop == 0:
                             if self.end is not None:
                                 temp_path,shoot_list,direction_list,map_list_return, exit_live = self.find_path_to_exit(start,(self.size-1,0))
+                                # if temp_path is None and exit_live is False:
+                                #     return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "StopUnsure"
                                 self.path.pop()
                                 self.path.extend(temp_path)
                                 self.map_list.extend(map_list_return)
@@ -747,6 +809,8 @@ class AgentController:
                                     if self.try_stop == 0:
                                         if self.end is not None:
                                             temp_path,shoot_list,direction_list,map_list_return, exit_live = self.find_path_to_exit(start,(self.size-1,0))
+                                            # if temp_path is None and exit_live is False:
+                                            #     return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "StopUnsure"
                                             self.path.pop()
                                             self.path.extend(temp_path)
                                             self.map_list.extend(map_list_return)
@@ -802,6 +866,8 @@ class AgentController:
                                     if self.try_stop == 0:
                                         if self.end is not None:
                                             temp_path,shoot_list,direction_list,map_list_return, exit_live = self.find_path_to_exit(start,(self.size-1,0))
+                                            # if temp_path is None and exit_live is False:
+                                            #     return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "StopUnsure"
                                             self.path.pop()
                                             self.path.extend(temp_path)
                                             self.map_list.extend(map_list_return)
@@ -856,6 +922,8 @@ class AgentController:
                                     if self.try_stop == 0:
                                         if self.end is not None:
                                             temp_path,shoot_list,direction_list,map_list_return, exit_live = self.find_path_to_exit(start,(self.size-1,0))
+                                            # if temp_path is None and exit_live is False:
+                                            #     return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "StopUnsure"
                                             self.path.pop()
                                             self.path.extend(temp_path)
                                             self.map_list.extend(map_list_return)
@@ -910,6 +978,8 @@ class AgentController:
                                     if self.try_stop == 0:
                                         if self.end is not None:
                                             temp_path,shoot_list,direction_list,map_list_return, exit_live = self.find_path_to_exit(start,(self.size-1,0))
+                                            # if temp_path is None and exit_live is False:
+                                            #     return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "StopUnsure"
                                             self.path.pop()
                                             self.path.extend(temp_path)
                                             self.map_list.extend(map_list_return)
@@ -957,6 +1027,39 @@ class AgentController:
         if len(kill_wumpus) != 0:
                 path_can_go.extend(kill_wumpus)
         if len(path_can_go) == 0 and old != (-1,-1):
+            self.try_stop -= 1
+            if self.try_stop <= 0:
+                temp_path,shoot_list,direction_list,map_list_return, exit_live = self.find_path_to_exit(start,(self.size-1,0))
+                if temp_path is None and exit_live is False:
+                    return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "StopUnsure"
+                self.path.pop()
+                self.path.extend(temp_path)
+                self.map_list.extend(map_list_return)
+                path_exit = len(temp_path)
+                for i in range(1,path_exit):
+                    point_temp = self.point[-1]
+                    if shoot_list[i] == 1:
+                        point_temp -= 100
+                    if "G" in self.map_game[temp_path[i][0]][temp_path[i][1]] and self.G[temp_path[i][0]][temp_path[i][1]]!="1":
+                        point_temp += 1000
+                        self.G[temp_path[i][0]][temp_path[i][1]] = "1"
+                        self.grab.append(1)
+                    else:
+                        self.grab.append(0)
+                    if "P" in self.map_game[temp_path[i][0]][temp_path[i][1]]:
+                        point_temp -= 10000
+                    if "W" in self.map_game[temp_path[i][0]][temp_path[i][1]] and not exit_live:
+                        point_temp -= 10000
+                    if shoot_list[i] == 1:
+                        self.point.append(point_temp)
+                    else:
+                        self.point.append(point_temp-10)
+                if exit_live:
+                    self.point[-1] += 10
+                shoot_list = shoot_list[1:]
+                self.shoot.extend(shoot_list)
+                self.direction_list.extend(direction_list)
+                return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "Stop"
             xynew = (start[0]-old[0],start[1]-old[1])
             direction_go = "right"
             if xynew == (0,1):
