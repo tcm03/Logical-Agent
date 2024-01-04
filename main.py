@@ -239,8 +239,17 @@ class Game:
             self.current_grab = info["grab"]
             self.map = info["map"]
 
+    def waiting_screen(self):
+        self.screen.fill(BGCOLOR)
+        text_font = get_font(100)
+        text_surf = text_font.render("Solving", True, GREEN)
+        text_rect = text_surf.get_rect(center=pygame.display.get_surface().get_rect().center)
+        self.screen.blit(text_surf, text_rect)
+        pygame.display.flip()
+
     def main_menu(self):
         while True:
+
             self.screen.blit(BG, (0, 0))
 
             MENU_MOUSE_POS = pygame.mouse.get_pos()
@@ -270,6 +279,7 @@ class Game:
                         file_dir = askopenfilename()
                         root.destroy()
                         print(file_dir)
+                        self.waiting_screen()
                         controller = SimpleController()
                         controller.solver(file_dir)
                         # print(controller.get_percept())
@@ -284,5 +294,4 @@ class Game:
 # create the game object
 # controller = SimpleController()
 g = Game()
-while True:
-    g.main_menu()
+g.main_menu()
