@@ -370,7 +370,6 @@ class AgentController:
         return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list,"Stop"
     
     def find_path_to_exit(self, start, end):
-        print("Start Exit")
         path_save = None
         shoot_list_save = None
         direction_list_save = None 
@@ -406,7 +405,6 @@ class AgentController:
         moves = [(0, 1), (0, -1), (-1, 0),(1, 0)]
         while frontier.qsize() != 0:
             cost, position ,old_position, direction,is_shoot,old_map2,old_knowPit2,old_knowWum2,old_p2,old_w2,old_g2 = frontier.get()
-            print(position)
             self.currentCave = position
             self.map_game=old_map2
             self.knowledgePit=old_knowPit2
