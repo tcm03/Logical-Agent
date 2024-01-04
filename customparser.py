@@ -84,3 +84,4 @@ def generate_map(size):
             map[i][j] = room
 
     return map
+

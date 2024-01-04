@@ -3,7 +3,7 @@ import time
 import pygame
 import sys
 
-import customparser
+import customParser
 
 from tkinter.filedialog import askopenfilename
 from tkinter import *
@@ -11,7 +11,7 @@ from tkinter import *
 from sprite import *
 from button import *
 
-from simple_controller import *
+from simpleController import *
 
 class Sound:
     def __init__(self):

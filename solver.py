@@ -1,6 +1,6 @@
 import copy
 from agentController import AgentController
-from customparser import read_map, infer_information
+from customParser import read_map, infer_information
 
 def find_path(start,old,check_style,offset,direction,map_game,gameController):
     gameController.updatePerceiveAgent(start,map_game,old,check_style,direction)
@@ -70,7 +70,7 @@ def getParameterUI(path_name,i):
             temp_point_list.append(point_list[i])
             temp_shoot_list.append((0,0))
             temp_grab_list.append(grab_list[i])
-            temp_map_list.append(map_list[i])
+            # temp_map_list.append(map_list[i])
             temp_direction_list.append(direction_list[i])
             if i+1 < temp_n:
                 for update_gold in range(i+1,temp_n):
@@ -81,6 +81,7 @@ def getParameterUI(path_name,i):
                     map_list[update_gold][x][y]=temp
                     if map_list[update_gold][x][y] == "":
                         map_list[update_gold][x][y]='-'
+                temp_map_list.append(map_list[i+1])
         
         if shoot_list[i][0] == 1:
             action_list.append("Shoot")
@@ -100,7 +101,7 @@ def getParameterUI(path_name,i):
                     temp_point_list.append(point_list[i])
                     temp_shoot_list.append((0,0))
                     temp_grab_list.append(0)
-                    temp_map_list.append(map_list[i])
+                    temp_map_list.append(map_list[i+1])
                     temp_direction_list.append("up")
                     
                 if direction_list[i] == "right" and direction_list[i+1] == "left":
@@ -109,7 +110,7 @@ def getParameterUI(path_name,i):
                     temp_point_list.append(point_list[i])
                     temp_shoot_list.append((0,0))
                     temp_grab_list.append(0)
-                    temp_map_list.append(map_list[i])
+                    temp_map_list.append(map_list[i+1])
                     temp_direction_list.append("up")
                     
                 if direction_list[i] == "up" and direction_list[i+1] == "down":
@@ -118,7 +119,7 @@ def getParameterUI(path_name,i):
                     temp_point_list.append(point_list[i])
                     temp_shoot_list.append((0,0))
                     temp_grab_list.append(0)
-                    temp_map_list.append(map_list[i])
+                    temp_map_list.append(map_list[i+1])
                     temp_direction_list.append("left")
                     
                 if direction_list[i] == "down" and direction_list[i+1] == "up":
@@ -127,7 +128,7 @@ def getParameterUI(path_name,i):
                     temp_point_list.append(point_list[i])
                     temp_shoot_list.append((0,0))
                     temp_grab_list.append(0)
-                    temp_map_list.append(map_list[i])
+                    temp_map_list.append(map_list[i+1])
                     temp_direction_list.append("right")
                 
                 if direction_list[i] == "left" and direction_list[i+1] == "up":
@@ -150,7 +151,7 @@ def getParameterUI(path_name,i):
                 temp_point_list.append(point_list[i])
                 temp_shoot_list.append((0,0))
                 temp_grab_list.append(0)
-                temp_map_list.append(map_list[i])
+                temp_map_list.append(map_list[i+1])
                 temp_direction_list.append(direction_list[i+1])
             
         if i == temp_n-1:
