@@ -607,13 +607,17 @@ class AgentController:
                 old_w3 = copy.deepcopy(self.W)
                 old_g3 = copy.deepcopy(self.G)
                 if self.confirmPit(next_x,next_y) == "0" and self.confirmWumpus(next_x,next_y) == "0" and visited[next_x][next_y] != True:
-                    frontier.put([cost+1,(next_x,next_y),(x,y),check_direction,0,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3])
-                    dem_temp += 1
+                    if "G" in self.map_game[next_x][next_y]: 
+                        frontier.put([cost-990,(next_x,next_y),(x,y),check_direction,0,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3])
+                        dem_temp += 1
+                    else:
+                        frontier.put([cost+10,(next_x,next_y),(x,y),check_direction,0,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3])
+                        dem_temp += 1
                 if self.confirmWumpus(next_x,next_y) == "1" and visited[next_x][next_y] != True and self.confirmPit(next_x,next_y) == "0":
-                    frontier.put([cost+100,(next_x,next_y),(x,y),check_direction,1,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3])
+                    frontier.put([cost+110,(next_x,next_y),(x,y),check_direction,1,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3])
                     dem_temp += 1
                 if self.confirmWumpus(next_x,next_y) == "-1" and visited[next_x][next_y] != True and self.confirmPit(next_x,next_y) == "0":
-                    frontier.put([cost+100,(next_x,next_y),(x,y),check_direction,1,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3])
+                    frontier.put([cost+110,(next_x,next_y),(x,y),check_direction,1,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3])
                     dem_temp += 1
             if dem_temp == 0:
                 move_random = [(1,0),(0,-1)]
@@ -1174,3 +1178,4 @@ class AgentController:
             print("Agent will not move when every cave is dangerous")
             return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list, "StopUnsure"
         return path_can_go,"Continue"
+
