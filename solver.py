@@ -39,6 +39,10 @@ def getParameterUI(path_name,i):
     
     path_list, point_list,shoot_list,direction_list,grab_list,map_list, _ = find_path(start_position,old_position,check_style, offset,direction,map_game_copy,gameController)
     
+    final_position = path_list[-1]
+    if final_position == (N-1,0):
+        point_list[-1] -= 10
+    
     temp_n = len(path_list)
     temp_past_list = []
     temp_point_list = []
@@ -160,8 +164,10 @@ def getParameterUI(path_name,i):
         if i == temp_n-1:
             if path_list[i] == (N-1,0):
                 action_list.append("Climb")
+                temp_point_list.append(point_list[i]+10)
             else:
                 action_list.append("Unsure Stop")
+                temp_point_list.append(point_list[i])
             temp_past_list.append(path_list[i])
             temp_point_list.append(point_list[i])
             temp_shoot_list.append((0,0))
