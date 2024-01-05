@@ -55,7 +55,7 @@ class AgentController:
     
     
     def perceive(self):
-        moves = [(0, 1), (0, -1), (-1, 0),(1, 0)]
+        moves = [(0, 1), (-1, 0), (0, -1),(1, 0)]
         
         x, y = self.currentCave
         
@@ -402,16 +402,16 @@ class AgentController:
         frontier.put([0, start,(-1,-1),old_direction1,0,old_map1,old_knowPit1,old_knowWum1,old_p1,old_w1,old_g1])
         self.updatePit(start[0],start[1],"0")
         self.updateWumPus(start[0],start[1],"0")
-        moves = [(0, 1), (0, -1), (-1, 0),(1, 0)]
+        moves = [(-1, 0), (0, 1), (0, -1),(1, 0)]
         while frontier.qsize() != 0:
             cost, position ,old_position, direction,is_shoot,old_map2,old_knowPit2,old_knowWum2,old_p2,old_w2,old_g2 = frontier.get()
             self.currentCave = position
-            self.map_game=old_map2
-            self.knowledgePit=old_knowPit2
-            self.knowledgeWum=old_knowWum2
-            self.P=old_p2
-            self.W=old_w2
-            self.G=old_g2
+            self.map_game=copy.deepcopy(old_map2)
+            self.knowledgePit=copy.deepcopy(old_knowPit2)
+            self.knowledgeWum=copy.deepcopy(old_knowWum2)
+            self.P=copy.deepcopy(old_p2)
+            self.W=copy.deepcopy(old_w2)
+            self.G=copy.deepcopy(old_g2)
             self.direction= direction
             self.currentCave = old_position
             kiemtra = False
@@ -425,123 +425,24 @@ class AgentController:
             if visited[x][y]:
                 continue
             visited[x][y] = True
-            trace[x][y] = (old_position,is_shoot,direction,old_map2,kiemtra)
+            trace[x][y] = (old_position,is_shoot,direction,copy.deepcopy(old_map2),kiemtra)
+            
+            
             if frontier.qsize() == 0:
                 self.currentCave = start
-                self.map_game=old_map
-                self.knowledgePit=old_knowPit
-                self.knowledgeWum=old_knowWum
-                self.P=old_p
-                self.W=old_w
-                self.G=old_g
-                self.direction= old_direction
+                temp_check_map = copy.deepcopy(self.map_game)
+                self.map_game=copy.deepcopy(old_map)
+                self.knowledgePit=copy.deepcopy(old_knowPit)
+                self.knowledgeWum=copy.deepcopy(old_knowWum)
+                self.P=copy.deepcopy(old_p)
+                self.W=copy.deepcopy(old_w)
+                self.G=copy.deepcopy(old_g)
+                self.direction= copy.deepcopy(old_direction)
                 path = []
                 shoot_list = [(0,0)]
                 direction_list = []
                 check_sort = is_shoot
                 map_list = []
-                temp_check_map = old_map
-                while position != start:
-                    if check_sort == 1:
-                        path.append(position)
-                        # path.append(position)
-                        if kiemtra:
-                            shoot_list.append((1,1))
-                        else:
-                            shoot_list.append((1,0))
-                        map_list.append(temp_check_map)
-                        shoot_list.append((0,0))
-                        # map_list.append(trace[position[0]][position[1]][3])
-                        map_list.append(temp_check_map)
-                        temp_check_map = trace[position[0]][position[1]][3]
-                        direction_list.append(trace[position[0]][position[1]][2])
-                        direction_list.append(trace[position[0]][position[1]][2])
-                        position = trace[position[0]][position[1]][0]
-                        path.append(position)
-                        check_sort = trace[position[0]][position[1]][1]
-                        kiemtra = trace[position[0]][position[1]][4]
-                    else:
-                        path.append(position)
-                        shoot_list.append((0,0))
-                        direction_list.append(trace[position[0]][position[1]][2])
-                        map_list.append(trace[position[0]][position[1]][3])
-                        temp_check_map = trace[position[0]][position[1]][3]
-                        position = trace[position[0]][position[1]][0]
-                        check_sort = trace[position[0]][position[1]][1]
-                        kiemtra = trace[position[0]][position[1]][4]
-                path.append(start)  
-                path.reverse()  
-                shoot_list.reverse()
-                direction_list.reverse()
-                map_list.reverse()
-                path_save = copy.deepcopy(path)
-                shoot_list_save = copy.deepcopy(shoot_list)
-                direction_list_save = copy.deepcopy(direction_list)
-                map_list_save = copy.deepcopy(map_list)
-            if self.map_game[x][y] == "P" or ("W" in self.map_game[x][y] and is_shoot == 0):
-                self.currentCave = start
-                self.map_game=old_map
-                self.knowledgePit=old_knowPit
-                self.knowledgeWum=old_knowWum
-                self.P=old_p
-                self.W=old_w
-                self.G=old_g
-                self.direction= old_direction
-                path = []
-                shoot_list = [(0,0)]
-                direction_list = []
-                check_sort = is_shoot
-                map_list = []
-                temp_check_map = old_map
-                while position != start:
-                    if check_sort == 1:
-                        path.append(position)
-                        # path.append(position)
-                        if kiemtra:
-                            shoot_list.append((1,1))
-                        else:
-                            shoot_list.append((1,0))
-                        map_list.append(temp_check_map)
-                        shoot_list.append((0,0))
-                        # map_list.append(trace[position[0]][position[1]][3])
-                        map_list.append(temp_check_map)
-                        temp_check_map = trace[position[0]][position[1]][3]
-                        direction_list.append(trace[position[0]][position[1]][2])
-                        direction_list.append(trace[position[0]][position[1]][2])
-                        position = trace[position[0]][position[1]][0]
-                        path.append(position)
-                        check_sort = trace[position[0]][position[1]][1]
-                        kiemtra = trace[position[0]][position[1]][4]
-                    else:
-                        path.append(position)
-                        shoot_list.append((0,0))
-                        direction_list.append(trace[position[0]][position[1]][2])
-                        map_list.append(trace[position[0]][position[1]][3])
-                        temp_check_map = trace[position[0]][position[1]][3]
-                        position = trace[position[0]][position[1]][0]
-                        check_sort = trace[position[0]][position[1]][1]
-                        kiemtra = trace[position[0]][position[1]][4]
-                path.append(start)  
-                path.reverse()  
-                shoot_list.reverse()
-                direction_list.reverse()
-                map_list.reverse()
-                return path,shoot_list,direction_list,map_list, False
-            if position == end:
-                self.currentCave = start
-                self.map_game=old_map
-                self.knowledgePit=old_knowPit
-                self.knowledgeWum=old_knowWum
-                self.P=old_p
-                self.W=old_w
-                self.G=old_g
-                self.direction= old_direction
-                path = []
-                shoot_list = [(0,0)]
-                direction_list = []
-                check_sort = is_shoot
-                map_list = []
-                temp_check_map = old_map
                 while position != start: 
                     if check_sort == 1:
                         path.append(position)
@@ -576,12 +477,124 @@ class AgentController:
                 direction_list.reverse()
                 map_list.reverse()
                 self.currentCave = start
-                self.map_game=old_map
-                self.knowledgePit=old_knowPit
-                self.knowledgeWum=old_knowWum
-                self.P=old_p
-                self.W=old_w
-                self.G=old_g
+                self.map_game=copy.deepcopy(old_map)
+                self.knowledgePit=copy.deepcopy(old_knowPit)
+                self.knowledgeWum=copy.deepcopy(old_knowWum)
+                self.P=copy.deepcopy(old_p)
+                self.W=copy.deepcopy(old_w)
+                self.G=copy.deepcopy(old_g)
+                self.direction= old_direction
+                path_save = copy.deepcopy(path)
+                shoot_list_save = copy.deepcopy(shoot_list)
+                direction_list_save = copy.deepcopy(direction_list)
+                map_list_save = copy.deepcopy(map_list)
+            
+            
+            if self.map_game[x][y] == "P" or ("W" in self.map_game[x][y] and is_shoot == 0):
+                self.currentCave = start
+                temp_check_map = copy.deepcopy(self.map_game)
+                self.map_game=copy.deepcopy(old_map)
+                self.knowledgePit=copy.deepcopy(old_knowPit)
+                self.knowledgeWum=copy.deepcopy(old_knowWum)
+                self.P=copy.deepcopy(old_p)
+                self.W=copy.deepcopy(old_w)
+                self.G=copy.deepcopy(old_g)
+                self.direction= old_direction
+                path = []
+                shoot_list = [(0,0)]
+                direction_list = []
+                check_sort = is_shoot
+                map_list = []
+                
+                while position != start:
+                    if check_sort == 1:
+                        path.append(position)
+                        # path.append(position)
+                        if kiemtra:
+                            shoot_list.append((1,1))
+                        else:
+                            shoot_list.append((1,0))
+                        map_list.append(temp_check_map)
+                        shoot_list.append((0,0))
+                        # map_list.append(trace[position[0]][position[1]][3])
+                        map_list.append(temp_check_map)
+                        temp_check_map = copy.deepcopy(trace[position[0]][position[1]][3])
+                        direction_list.append(trace[position[0]][position[1]][2])
+                        direction_list.append(trace[position[0]][position[1]][2])
+                        position = trace[position[0]][position[1]][0]
+                        path.append(position)
+                        check_sort = trace[position[0]][position[1]][1]
+                        kiemtra = trace[position[0]][position[1]][4]
+                    else:
+                        path.append(position)
+                        shoot_list.append((0,0))
+                        direction_list.append(trace[position[0]][position[1]][2])
+                        map_list.append(trace[position[0]][position[1]][3])
+                        temp_check_map = copy.deepcopy(trace[position[0]][position[1]][3])
+                        position = trace[position[0]][position[1]][0]
+                        check_sort = trace[position[0]][position[1]][1]
+                        kiemtra = trace[position[0]][position[1]][4]
+                path.append(start)  
+                path.reverse()  
+                shoot_list.reverse()
+                direction_list.reverse()
+                map_list.reverse()
+                return path,shoot_list,direction_list,map_list, False
+            if position == end:
+                self.currentCave = start
+                temp_check_map = copy.deepcopy(self.map_game)
+                self.map_game=copy.deepcopy(old_map)
+                self.knowledgePit=copy.deepcopy(old_knowPit)
+                self.knowledgeWum=copy.deepcopy(old_knowWum)
+                self.P=copy.deepcopy(old_p)
+                self.W=copy.deepcopy(old_w)
+                self.G=copy.deepcopy(old_g)
+                self.direction= copy.deepcopy(old_direction)
+                path = []
+                shoot_list = [(0,0)]
+                direction_list = []
+                check_sort = is_shoot
+                map_list = []
+                while position != start: 
+                    if check_sort == 1:
+                        path.append(position)
+                        # path.append(position)
+                        if kiemtra:
+                            shoot_list.append((1,1))
+                        else:
+                            shoot_list.append((1,0))
+                        map_list.append(temp_check_map)
+                        shoot_list.append((0,0))
+                        # map_list.append(trace[position[0]][position[1]][3])
+                        map_list.append(temp_check_map)
+                        temp_check_map = trace[position[0]][position[1]][3]
+                        direction_list.append(trace[position[0]][position[1]][2])
+                        direction_list.append(trace[position[0]][position[1]][2])
+                        position = trace[position[0]][position[1]][0]
+                        path.append(position)
+                        check_sort = trace[position[0]][position[1]][1]
+                        kiemtra = trace[position[0]][position[1]][4]
+                    else:
+                        path.append(position)
+                        shoot_list.append((0,0))
+                        direction_list.append(trace[position[0]][position[1]][2])
+                        map_list.append(trace[position[0]][position[1]][3])
+                        temp_check_map = trace[position[0]][position[1]][3]
+                        position = trace[position[0]][position[1]][0]
+                        check_sort = trace[position[0]][position[1]][1]
+                        kiemtra = trace[position[0]][position[1]][4]
+                path.append(start)
+                path.reverse()
+                shoot_list.reverse()
+                direction_list.reverse()
+                map_list.reverse()
+                self.currentCave = start
+                self.map_game=copy.deepcopy(old_map)
+                self.knowledgePit=copy.deepcopy(old_knowPit)
+                self.knowledgeWum=copy.deepcopy(old_knowWum)
+                self.P=copy.deepcopy(old_p)
+                self.W=copy.deepcopy(old_w)
+                self.G=copy.deepcopy(old_g)
                 self.direction= old_direction
                 return path,shoot_list,direction_list,map_list, True
             dem_temp = 0
@@ -650,7 +663,7 @@ class AgentController:
         return path_save,shoot_list_save,direction_list_save,map_list_save, False
 
     def getPathCanGo(self,start,check_style,offset,direction,old):
-        moves = [(0, 1), (0, -1), (-1, 0),(1, 0)]
+        moves = [(-1, 0),(0, 1), (0, -1) ,(1, 0)]
         path_can_go = []
         kill_wumpus = []
         for x_offset, y_offset in moves:
