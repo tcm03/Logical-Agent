@@ -90,13 +90,13 @@ def getParameterUI(path_name,i):
             if i < temp_n:
                 for update_gold in range(i,temp_n):
                     x, y = path_list[i]
-                    txt = map_list[update_gold][x][y]
+                    txt = copy.deepcopy(map_list[update_gold][x][y])
                     if "G" in txt:
                         temp = txt[0:txt.index("G")]+txt[txt.index("G")+1:]
                     map_list[update_gold][x][y]=temp
                     if map_list[update_gold][x][y] == "":
                         map_list[update_gold][x][y]='-'
-            temp_map_list.append(map_list[i])
+            temp_map_list.append(copy.deepcopy(map_list[i]))
         
         
         
@@ -173,7 +173,7 @@ def getParameterUI(path_name,i):
             temp_point_list.append(point_list[i])
             temp_shoot_list.append((0,0))
             temp_grab_list.append(0)
-            temp_map_list.append(map_list[i])
+            temp_map_list.append(copy.deepcopy(map_list[i]))
             temp_direction_list.append(direction_list[i])
             
     
@@ -194,5 +194,9 @@ def getParameter2(path_name):
             continue
         if best_point_list[-1] < temp_point_list[-1]:
             best_past_list, best_point_list,best_shoot_list,best_direction_list,best_grab_list,best_map_list,best_action_list = temp_past_list, temp_point_list,temp_shoot_list,temp_direction_list,temp_grab_list,temp_map_list,action_list
-            
+    
+    print(best_past_list)
+    print(best_point_list)
+    print(best_shoot_list)
+    print(best_direction_list)
     return best_past_list, best_point_list,best_shoot_list,best_direction_list,best_grab_list,best_map_list,best_action_list

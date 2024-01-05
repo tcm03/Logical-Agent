@@ -370,6 +370,7 @@ class AgentController:
         return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list,"Stop"
     
     def find_path_to_exit(self, start, end):
+        print("Startexit:, ",start)
         path_save = None
         shoot_list_save = None
         direction_list_save = None 
@@ -381,7 +382,7 @@ class AgentController:
             temp_visited = []
             for _ in range(self.size):
                 temp.append(((-1,-1),0))
-                temp_visited.append(False)
+                temp_visited.append(0)
             trace.append(temp)
             visited.append(temp_visited)
         old_map = copy.deepcopy(self.map_game)
@@ -419,14 +420,34 @@ class AgentController:
                 kiemtra = self.confirmScream()
                 if kiemtra:
                     self.updateMap()
-            self.currentCave = position        
+            self.currentCave = position
+            print(position)
+            print(self.P)
             self.perceive()
+            print(self.P)
             x, y = position
             if visited[x][y]:
                 continue
-            visited[x][y] = True
+            visited[x][y] = 1
             trace[x][y] = (old_position,is_shoot,direction,copy.deepcopy(old_map2),kiemtra)
             
+            temp_current_start = None
+            temp_current_map_game = None
+            temp_current_knowP = None
+            temp_current_knowW = None
+            temp_current_P = None
+            temp_current_W = None
+            temp_current_G = None
+            temp_current_direction = None
+            if frontier.qsize() == 0:
+                temp_current_start = copy.deepcopy(self.currentCave)
+                temp_current_map_game = copy.deepcopy(self.map_game)
+                temp_current_knowP = copy.deepcopy(self.knowledgePit)
+                temp_current_knowW = copy.deepcopy(self.knowledgeWum)
+                temp_current_P = copy.deepcopy(self.P)
+                temp_current_W = copy.deepcopy(self.W)
+                temp_current_G = copy.deepcopy(self.G)
+                temp_current_direction = copy.deepcopy(self.direction)
             
             if frontier.qsize() == 0:
                 self.currentCave = start
@@ -488,6 +509,18 @@ class AgentController:
                 shoot_list_save = copy.deepcopy(shoot_list)
                 direction_list_save = copy.deepcopy(direction_list)
                 map_list_save = copy.deepcopy(map_list)
+                
+            
+            if frontier.qsize() == 0:
+                self.currentCave = temp_current_start
+                self.map_game = temp_current_map_game
+                self.knowledgePit = temp_current_knowP
+                self.knowledgeWum = temp_current_knowW
+                self.P = temp_current_P
+                self.W = temp_current_W
+                self.G = temp_current_G
+                self.direction = temp_current_direction
+                
             
             
             if self.map_game[x][y] == "P" or ("W" in self.map_game[x][y] and is_shoot == 0):
@@ -540,6 +573,7 @@ class AgentController:
                 direction_list.reverse()
                 map_list.reverse()
                 return path,shoot_list,direction_list,map_list, False
+            
             if position == end:
                 self.currentCave = start
                 temp_check_map = copy.deepcopy(self.map_game)
@@ -599,9 +633,14 @@ class AgentController:
                 return path,shoot_list,direction_list,map_list, True
             dem_temp = 0
             for x_offset,y_offset in moves:
+                print("Start end end")
+                
+                
                 next_x, next_y = x + x_offset, y + y_offset
                 if next_x < 0 or next_x >= self.size or next_y < 0 or next_y >= self.size:
                     continue
+                print(self.confirmPit(next_x,next_y))
+                print(self.confirmWumpus(next_x,next_y))
                 check_direction = "right"
                 if (x_offset,y_offset) == (0,1):
                     check_direction = "right"
@@ -617,17 +656,20 @@ class AgentController:
                 old_p3 = copy.deepcopy(self.P)
                 old_w3 = copy.deepcopy(self.W)
                 old_g3 = copy.deepcopy(self.G)
-                if self.confirmPit(next_x,next_y) == "0" and self.confirmWumpus(next_x,next_y) == "0" and visited[next_x][next_y] != True:
+                if self.confirmPit(next_x,next_y) == "0" and self.confirmWumpus(next_x,next_y) == "0" and visited[next_x][next_y] != 1:
                     if "G" in self.map_game[next_x][next_y]: 
+                        print("Start end end 1")
                         frontier.put([cost-990,(next_x,next_y),(x,y),check_direction,0,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3])
                         dem_temp += 1
                     else:
                         frontier.put([cost+10,(next_x,next_y),(x,y),check_direction,0,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3])
                         dem_temp += 1
-                if self.confirmWumpus(next_x,next_y) == "1" and visited[next_x][next_y] != True and self.confirmPit(next_x,next_y) == "0":
+                if self.confirmWumpus(next_x,next_y) == "1" and visited[next_x][next_y] != 1 and self.confirmPit(next_x,next_y) == "0":
+                    print("Start end end 2")
                     frontier.put([cost+110,(next_x,next_y),(x,y),check_direction,1,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3])
                     dem_temp += 1
-                if self.confirmWumpus(next_x,next_y) == "-1" and visited[next_x][next_y] != True and self.confirmPit(next_x,next_y) == "0":
+                if self.confirmWumpus(next_x,next_y) == "-1" and visited[next_x][next_y] != 1 and self.confirmPit(next_x,next_y) == "0":
+                    print("Start end end 3")
                     frontier.put([cost+110,(next_x,next_y),(x,y),check_direction,1,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3])
                     dem_temp += 1
             if dem_temp == 0:
@@ -658,12 +700,12 @@ class AgentController:
                 old_w3 = copy.deepcopy(self.W)
                 old_g3 = copy.deepcopy(self.G)
                 if self.confirmPit(next_x1,next_y1) == "0":
-                    frontier.put([cost+1,(next_x1,next_y1),(x,y),check_direction_ran,0,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3]) 
+                    frontier.put([cost+10,(next_x1,next_y1),(x,y),check_direction_ran,0,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3]) 
             
         return path_save,shoot_list_save,direction_list_save,map_list_save, False
 
     def getPathCanGo(self,start,check_style,offset,direction,old):
-        moves = [(-1, 0),(0, 1), (0, -1) ,(1, 0)]
+        moves = [(-1, 0), (0, 1), (0, -1) ,(1, 0)]
         path_can_go = []
         kill_wumpus = []
         for x_offset, y_offset in moves:
@@ -700,7 +742,7 @@ class AgentController:
                                 path_exit = len(temp_path)
                                 for i in range(1,path_exit):
                                     point_temp = self.point[-1]
-                                    if shoot_list[i] == 1:
+                                    if shoot_list[i][0] == 1:
                                         point_temp -= 100
                                     if "G" in self.map_game[temp_path[i][0]][temp_path[i][1]] and self.G[temp_path[i][0]][temp_path[i][1]]!="1":
                                         point_temp += 1000
@@ -712,7 +754,7 @@ class AgentController:
                                         point_temp -= 10000
                                     if "W" in self.map_game[temp_path[i][0]][temp_path[i][1]] and not exit_live:
                                         point_temp -= 10000
-                                    if shoot_list[i] == 1:
+                                    if shoot_list[i][0] == 1:
                                         self.point.append(point_temp)
                                     else:
                                         self.point.append(point_temp-10)
@@ -832,7 +874,7 @@ class AgentController:
                                             path_exit = len(temp_path)
                                             for i in range(1,path_exit):
                                                 point_temp = self.point[-1]
-                                                if shoot_list[i] == 1:
+                                                if shoot_list[i][0] == 1:
                                                     point_temp -= 100
                                                 if "G" in self.map_game[temp_path[i][0]][temp_path[i][1]] and self.G[temp_path[i][0]][temp_path[i][1]]!="1":
                                                     point_temp += 1000
@@ -844,7 +886,7 @@ class AgentController:
                                                     point_temp -= 10000
                                                 if "W" in self.map_game[temp_path[i][0]][temp_path[i][1]] and not exit_live:
                                                     point_temp -= 10000
-                                                if shoot_list[i] == 1:
+                                                if shoot_list[i][0] == 1:
                                                     self.point.append(point_temp)
                                                 else:
                                                     self.point.append(point_temp-10)
@@ -889,7 +931,7 @@ class AgentController:
                                             path_exit = len(temp_path)
                                             for i in range(1,path_exit):
                                                 point_temp = self.point[-1]
-                                                if shoot_list[i] == 1:
+                                                if shoot_list[i][0] == 1:
                                                     point_temp -= 100
                                                 if "G" in self.map_game[temp_path[i][0]][temp_path[i][1]] and self.G[temp_path[i][0]][temp_path[i][1]]!="1":
                                                     point_temp += 1000
@@ -901,7 +943,7 @@ class AgentController:
                                                     point_temp -= 10000
                                                 if "W" in self.map_game[temp_path[i][0]][temp_path[i][1]] and not exit_live:
                                                     point_temp -= 10000
-                                                if shoot_list[i] == 1:
+                                                if shoot_list[i][0] == 1:
                                                     self.point.append(point_temp)
                                                 else:
                                                     self.point.append(point_temp-10)
@@ -945,7 +987,7 @@ class AgentController:
                                             path_exit = len(temp_path)
                                             for i in range(1,path_exit):
                                                 point_temp = self.point[-1]
-                                                if shoot_list[i] == 1:
+                                                if shoot_list[i][0] == 1:
                                                     point_temp -= 100
                                                 if "G" in self.map_game[temp_path[i][0]][temp_path[i][1]] and self.G[temp_path[i][0]][temp_path[i][1]]!="1":
                                                     point_temp += 1000
@@ -957,7 +999,7 @@ class AgentController:
                                                     point_temp -= 10000
                                                 if "W" in self.map_game[temp_path[i][0]][temp_path[i][1]] and not exit_live:
                                                     point_temp -= 10000
-                                                if shoot_list[i] == 1:
+                                                if shoot_list[i][0] == 1:
                                                     self.point.append(point_temp)
                                                 else:
                                                     self.point.append(point_temp-10)
@@ -1001,7 +1043,7 @@ class AgentController:
                                             path_exit = len(temp_path)
                                             for i in range(1,path_exit):
                                                 point_temp = self.point[-1]
-                                                if shoot_list[i] == 1:
+                                                if shoot_list[i][0] == 1:
                                                     point_temp -= 100
                                                 if "G" in self.map_game[temp_path[i][0]][temp_path[i][1]] and self.G[temp_path[i][0]][temp_path[i][1]]!="1":
                                                     point_temp += 1000
@@ -1013,7 +1055,7 @@ class AgentController:
                                                     point_temp -= 10000
                                                 if "W" in self.map_game[temp_path[i][0]][temp_path[i][1]] and not exit_live:
                                                     point_temp -= 10000
-                                                if shoot_list[i] == 1:
+                                                if shoot_list[i][0] == 1:
                                                     self.point.append(point_temp)
                                                 else:
                                                     self.point.append(point_temp-10)
@@ -1053,7 +1095,7 @@ class AgentController:
                 path_exit = len(temp_path)
                 for i in range(1,path_exit):
                     point_temp = self.point[-1]
-                    if shoot_list[i] == 1:
+                    if shoot_list[i][0] == 1:
                         point_temp -= 100
                     if "G" in self.map_game[temp_path[i][0]][temp_path[i][1]] and self.G[temp_path[i][0]][temp_path[i][1]]!="1":
                         point_temp += 1000
@@ -1065,7 +1107,7 @@ class AgentController:
                         point_temp -= 10000
                     if "W" in self.map_game[temp_path[i][0]][temp_path[i][1]] and not exit_live:
                         point_temp -= 10000
-                    if shoot_list[i] == 1:
+                    if shoot_list[i][0] == 1:
                         self.point.append(point_temp)
                     else:
                         self.point.append(point_temp-10)
