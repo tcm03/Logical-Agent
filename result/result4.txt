@@ -1,0 +1,44 @@
+510
+Start
+Turn left
+Forward
+Turn left
+Turn left
+Forward
+Turn right
+Forward
+Turn left
+Forward
+Forward
+Turn left
+Turn left
+Forward
+Turn right
+Forward
+Turn right
+Forward
+Turn right
+Forward
+Turn left
+Forward
+Forward
+Shoot
+Forward
+Turn left
+Shoot
+Forward
+Shoot
+Forward
+Grab
+Forward
+Turn right
+Turn right
+Forward
+Turn right
+Forward
+Forward
+Turn right
+Forward
+Turn left
+Forward
+Climb

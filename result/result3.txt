@@ -1,0 +1,35 @@
+150
+Start
+Turn left
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Turn right
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Grab
+Turn right
+Shoot
+Forward
+Turn right
+Shoot
+Forward
+Shoot
+Forward
+Turn left
+Forward
+Turn right
+Forward
+Forward
+Turn right
+Forward
+Turn right
+Forward
+Forward
+Forward
+Climb

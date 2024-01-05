@@ -1,0 +1,11 @@
+-130
+Start
+Turn left
+Forward
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Forward
+Climb

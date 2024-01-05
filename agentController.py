@@ -370,7 +370,6 @@ class AgentController:
         return self.path,self.point,self.shoot,self.direction_list,self.grab,self.map_list,"Stop"
     
     def find_path_to_exit(self, start, end):
-        print("Startexit:, ",start)
         path_save = None
         shoot_list_save = None
         direction_list_save = None 
@@ -421,10 +420,7 @@ class AgentController:
                 if kiemtra:
                     self.updateMap()
             self.currentCave = position
-            print(position)
-            print(self.P)
             self.perceive()
-            print(self.P)
             x, y = position
             if visited[x][y]:
                 continue
@@ -633,14 +629,9 @@ class AgentController:
                 return path,shoot_list,direction_list,map_list, True
             dem_temp = 0
             for x_offset,y_offset in moves:
-                print("Start end end")
-                
-                
                 next_x, next_y = x + x_offset, y + y_offset
                 if next_x < 0 or next_x >= self.size or next_y < 0 or next_y >= self.size:
                     continue
-                print(self.confirmPit(next_x,next_y))
-                print(self.confirmWumpus(next_x,next_y))
                 check_direction = "right"
                 if (x_offset,y_offset) == (0,1):
                     check_direction = "right"
@@ -658,18 +649,15 @@ class AgentController:
                 old_g3 = copy.deepcopy(self.G)
                 if self.confirmPit(next_x,next_y) == "0" and self.confirmWumpus(next_x,next_y) == "0" and visited[next_x][next_y] != 1:
                     if "G" in self.map_game[next_x][next_y]: 
-                        print("Start end end 1")
                         frontier.put([cost-990,(next_x,next_y),(x,y),check_direction,0,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3])
                         dem_temp += 1
                     else:
                         frontier.put([cost+10,(next_x,next_y),(x,y),check_direction,0,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3])
                         dem_temp += 1
                 if self.confirmWumpus(next_x,next_y) == "1" and visited[next_x][next_y] != 1 and self.confirmPit(next_x,next_y) == "0":
-                    print("Start end end 2")
                     frontier.put([cost+110,(next_x,next_y),(x,y),check_direction,1,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3])
                     dem_temp += 1
                 if self.confirmWumpus(next_x,next_y) == "-1" and visited[next_x][next_y] != 1 and self.confirmPit(next_x,next_y) == "0":
-                    print("Start end end 3")
                     frontier.put([cost+110,(next_x,next_y),(x,y),check_direction,1,old_map3,old_knowPit3,old_knowWum3,old_p3,old_w3,old_g3])
                     dem_temp += 1
             if dem_temp == 0:

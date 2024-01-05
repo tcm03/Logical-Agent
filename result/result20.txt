@@ -1,0 +1,304 @@
+10830
+Start
+Turn left
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Turn right
+Shoot
+Forward
+Turn right
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Turn right
+Shoot
+Forward
+Turn right
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Turn right
+Shoot
+Forward
+Turn right
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Turn right
+Shoot
+Forward
+Turn right
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Turn right
+Shoot
+Forward
+Turn right
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Turn right
+Shoot
+Forward
+Turn right
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Turn right
+Shoot
+Forward
+Turn right
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Turn right
+Shoot
+Forward
+Turn right
+Shoot
+Forward
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Turn right
+Shoot
+Forward
+Turn right
+Shoot
+Forward
+Forward
+Shoot
+Forward
+Grab
+Turn right
+Forward
+Grab
+Shoot
+Forward
+Grab
+Shoot
+Forward
+Grab
+Shoot
+Forward
+Grab
+Shoot
+Forward
+Grab
+Shoot
+Forward
+Grab
+Shoot
+Forward
+Grab
+Shoot
+Forward
+Grab
+Shoot
+Forward
+Grab
+Turn right
+Shoot
+Forward
+Turn right
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Turn right
+Turn right
+Forward
+Turn left
+Turn left
+Forward
+Forward
+Turn right
+Turn right
+Forward
+Turn left
+Turn left
+Forward
+Turn left
+Forward
+Turn left
+Turn left
+Forward
+Turn left
+Turn left
+Forward
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Turn right
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Turn right
+Shoot
+Forward
+Turn right
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Shoot
+Forward
+Turn left
+Shoot
+Forward
+Turn right
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Turn left
+Forward
+Turn right
+Shoot
+Forward
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Turn left
+Forward
+Grab
+Turn right
+Forward
+Grab
+Forward
+Grab
+Turn left
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Turn right
+Forward
+Grab
+Turn left
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Turn right
+Forward
+Grab
+Turn left
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Turn right
+Forward
+Grab
+Turn left
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Turn right
+Forward
+Grab
+Turn left
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Turn right
+Forward
+Grab
+Turn left
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Turn right
+Forward
+Grab
+Turn left
+Shoot
+Forward
+Turn left
+Turn left
+Forward
+Turn right
+Forward
+Forward
+Forward
+Forward
+Forward
+Forward
+Forward
+Forward
+Forward
+Climb

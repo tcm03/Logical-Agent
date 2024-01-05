@@ -22,12 +22,9 @@ def infer_information(world_map):
             if 'P' in world_map[row][col]:
                 update_adjacent(world_map, row, col, 'B')
             if 'A' in world_map[row][col]:
-                print("here1")
                 if len(world_map[row][col]) == 1:
-                    print("here2")
                     world_map[row][col] = '-'
                 else:
-                    print("here3")
                     world_map[row][col] = world_map[row][col].replace("A", "")
                 i = row
                 j = col

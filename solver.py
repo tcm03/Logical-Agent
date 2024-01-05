@@ -1,6 +1,9 @@
 import copy
+import re
 from agentController import AgentController
 from customParser import read_map, infer_information
+import os
+from datetime import datetime
 
 def find_path(start,old,check_style,offset,direction,map_game,gameController):
     gameController.updatePerceiveAgent(start,map_game,old,check_style,direction)
@@ -170,7 +173,6 @@ def getParameterUI(path_name,i):
                 action_list.append("Unsure Stop")
                 temp_point_list.append(point_list[i])
             temp_past_list.append(path_list[i])
-            temp_point_list.append(point_list[i])
             temp_shoot_list.append((0,0))
             temp_grab_list.append(0)
             temp_map_list.append(copy.deepcopy(map_list[i]))
@@ -195,8 +197,22 @@ def getParameter2(path_name):
         if best_point_list[-1] < temp_point_list[-1]:
             best_past_list, best_point_list,best_shoot_list,best_direction_list,best_grab_list,best_map_list,best_action_list = temp_past_list, temp_point_list,temp_shoot_list,temp_direction_list,temp_grab_list,temp_map_list,action_list
     
-    print(best_past_list)
-    print(best_point_list)
-    print(best_shoot_list)
-    print(best_direction_list)
+    result_directory = "result"
+    if not os.path.exists(result_directory):
+        os.makedirs(result_directory)
+        print(f'The directory "{result_directory}" has been created.')
+    
+    pattern = r'\d+'
+    namefile = "result"
+    matches = re.findall(pattern, path_name)
+
+    if matches:
+        namefile = namefile + matches[-1]+ ".txt"
+        
+    file_path = os.path.join(result_directory, namefile)
+    with open(file_path, 'w+') as file:
+        file.write(f"{best_point_list[-1]}\n")
+        for action in best_action_list:
+            file.write(f"{action}\n")
+    
     return best_past_list, best_point_list,best_shoot_list,best_direction_list,best_grab_list,best_map_list,best_action_list

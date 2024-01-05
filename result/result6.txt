@@ -1,0 +1,29 @@
+2880
+Start
+Forward
+Turn left
+Turn left
+Forward
+Turn left
+Forward
+Turn right
+Forward
+Forward
+Turn left
+Turn left
+Forward
+Turn left
+Forward
+Turn right
+Forward
+Forward
+Grab
+Turn right
+Forward
+Grab
+Turn right
+Forward
+Grab
+Forward
+Forward
+Climb

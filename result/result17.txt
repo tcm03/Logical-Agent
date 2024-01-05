@@ -1,0 +1,94 @@
+4970
+Start
+Turn left
+Forward
+Turn right
+Forward
+Forward
+Forward
+Forward
+Forward
+Forward
+Forward
+Turn right
+Forward
+Turn right
+Forward
+Grab
+Forward
+Forward
+Forward
+Forward
+Forward
+Turn left
+Forward
+Turn right
+Forward
+Forward
+Forward
+Forward
+Forward
+Turn left
+Forward
+Turn left
+Forward
+Forward
+Forward
+Forward
+Forward
+Turn left
+Forward
+Forward
+Forward
+Turn right
+Forward
+Turn right
+Shoot
+Forward
+Forward
+Turn right
+Shoot
+Forward
+Turn right
+Forward
+Turn right
+Shoot
+Forward
+Forward
+Grab
+Turn left
+Forward
+Grab
+Turn right
+Forward
+Turn right
+Forward
+Turn right
+Forward
+Turn right
+Forward
+Grab
+Turn right
+Forward
+Forward
+Forward
+Forward
+Turn left
+Forward
+Turn right
+Forward
+Forward
+Grab
+Shoot
+Forward
+Turn right
+Forward
+Grab
+Turn left
+Shoot
+Forward
+Turn left
+Forward
+Turn right
+Forward
+Climb
